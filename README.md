@@ -8,6 +8,19 @@ A Neovim plugin for managing your personal wiki.
   <img src="demo.gif" alt="womwiki demo" width="800" />
 </p>
 
+## Features
+
+- **Daily notes** — templated journal entries with todo rollover between days
+- **Wikilinks** — `[[Page Name]]` syntax with fuzzy resolution and create-on-follow
+- **Link graph** — visualize connections, find orphans, hubs, and broken links
+- **Backlinks** — instantly find every file that links to the current note
+- **Tags** — inline `#tags` and YAML frontmatter, browse and filter by tag
+- **Quick capture** — grab a thought to your inbox with a source link back to where you were
+- **Calendar** — visual month view to navigate daily notes
+- **Rename & refactor** — rename a file and update all inbound links automatically
+- **Completion** — autocomplete links, headings, and tags (blink.cmp + nvim-cmp)
+- **Multi-picker** — works with snacks, fzf-lua, mini.pick, or telescope (auto-detected)
+
 ## Dependencies
 
 One of the following picker plugins is required:
