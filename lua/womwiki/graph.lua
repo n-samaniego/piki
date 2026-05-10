@@ -318,21 +318,27 @@ function M.show()
 	-- Build graph display
 	local lines = {}
 	local highlights = {} -- Track which lines need highlighting
-	-- Make width responsive: 70% of screen width, min 60, max 120
-	local max_width = math.max(60, math.min(120, math.floor(vim.o.columns * 0.7)))
+	local max_width = math.max(56, math.min(100, math.floor(vim.o.columns * 0.6)))
+
+	local function add(text, hl_group, col_start, col_end)
+		table.insert(lines, text)
+		if hl_group then
+			table.insert(
+				highlights,
+				{ line = #lines - 1, hl_group = hl_group, col_start = col_start, col_end = col_end }
+			)
+		end
+	end
+
+	local function separator()
+		add(string.rep("─", max_width), "WomwikiGraphBorder")
+	end
 
 	-- Header
-	table.insert(lines, "╭─ Wiki Link Graph " .. string.rep("─", max_width - 18) .. "╮")
-	table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphBorder" })
 	if current_file ~= "" then
-		table.insert(lines, "│ Current: " .. current_file .. string.rep(" ", max_width - 10 - #current_file) .. "│")
-		table.insert(
-			highlights,
-			{ line = #lines - 1, hl_group = "WomwikiGraphCurrent", col_start = 10, col_end = 10 + #current_file }
-		)
+		add("Current: " .. current_file, "WomwikiGraphCurrent", 9, 9 + #current_file)
 	end
-	table.insert(lines, "├" .. string.rep("─", max_width) .. "┤")
-	table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphBorder" })
+	separator()
 
 	-- Calculate stats
 	local total_files = 0
@@ -371,40 +377,31 @@ function M.show()
 		total_broken = total_broken + #targets
 	end
 
-	-- Stats section with density
-	local stats_line = "│ Files: "
-		.. total_files
-		.. " | Links: "
-		.. total_links
-		.. " | Avg: "
-		.. avg_links
-		.. " | Broken: "
-		.. total_broken
-		.. " | Orphans: "
-		.. #orphans
-	local stats_padding = max_width - #stats_line + 1
-	table.insert(lines, stats_line .. string.rep(" ", stats_padding) .. "│")
-	table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphStats" })
-	table.insert(lines, "├" .. string.rep("─", max_width) .. "┤")
-	table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphBorder" })
+	-- Stats line
+	add(
+		"Files: "
+			.. total_files
+			.. "  Links: "
+			.. total_links
+			.. "  Avg: "
+			.. avg_links
+			.. "  Broken: "
+			.. total_broken
+			.. "  Orphans: "
+			.. #orphans,
+		"WomwikiGraphStats"
+	)
+	separator()
 
 	-- Current file details (if in a wiki file)
 	if current_file ~= "" and graph[current_file] then
 		local data = graph[current_file]
 		local total_conn = #data.links_to + #data.linked_from
-		table.insert(
-			lines,
-			"│ Current file: "
-				.. current_file
-				.. " ("
-				.. total_conn
-				.. " connections)"
-				.. string.rep(" ", max_width - 27 - #current_file - #tostring(total_conn))
-				.. "│"
-		)
-		table.insert(
-			highlights,
-			{ line = #lines - 1, hl_group = "WomwikiGraphCurrent", col_start = 15, col_end = 15 + #current_file }
+		add(
+			"Current file: " .. current_file .. " (" .. total_conn .. " connections)",
+			"WomwikiGraphCurrent",
+			14,
+			14 + #current_file
 		)
 
 		-- Links to (outgoing)
@@ -412,12 +409,11 @@ function M.show()
 			local max_links_shown = 5
 			local links_text = table.concat(vim.list_slice(data.links_to, 1, max_links_shown), ", ")
 			if #data.links_to > max_links_shown then
-				links_text = links_text .. " ... and " .. (#data.links_to - max_links_shown) .. " more"
+				links_text = links_text .. " … +" .. (#data.links_to - max_links_shown) .. " more"
 			end
-			local links_line = "│   → Links to (" .. #data.links_to .. "): " .. links_text
-			table.insert(lines, links_line .. string.rep(" ", max_width - #links_line + 1) .. "│")
+			add("  → Links to (" .. #data.links_to .. "): " .. links_text)
 		else
-			table.insert(lines, "│   → Links to (0): (none)" .. string.rep(" ", max_width - 23) .. "│")
+			add("  → Links to (0): (none)")
 		end
 
 		-- Linked from (incoming/backlinks)
@@ -425,38 +421,32 @@ function M.show()
 			local max_links_shown = 5
 			local backlinks_text = table.concat(vim.list_slice(data.linked_from, 1, max_links_shown), ", ")
 			if #data.linked_from > max_links_shown then
-				backlinks_text = backlinks_text .. " ... and " .. (#data.linked_from - max_links_shown) .. " more"
+				backlinks_text = backlinks_text .. " … +" .. (#data.linked_from - max_links_shown) .. " more"
 			end
-			local backlinks_line = "│   ← Linked from (" .. #data.linked_from .. "): " .. backlinks_text
-			table.insert(lines, backlinks_line .. string.rep(" ", max_width - #backlinks_line + 1) .. "│")
+			add("  ← Linked from (" .. #data.linked_from .. "): " .. backlinks_text)
 		else
-			table.insert(lines, "│   ← Linked from (0): (none)" .. string.rep(" ", max_width - 26) .. "│")
+			add("  ← Linked from (0): (none)")
 		end
 
-		table.insert(lines, "├" .. string.rep("─", max_width) .. "┤")
-		table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphBorder" })
+		separator()
 	end
 
 	-- Top hubs
 	if #hubs > 0 then
-		table.insert(lines, "│ Popular files (most backlinks):" .. string.rep(" ", max_width - 32) .. "│")
+		add("Popular files (most backlinks):")
 		for i = 1, math.min(5, #hubs) do
 			local hub = hubs[i]
-			local line = "│   " .. hub.name .. " (" .. hub.count .. ")"
-			table.insert(lines, line .. string.rep(" ", max_width - #line + 1) .. "│")
+			add("  " .. hub.name .. " (" .. hub.count .. ")", "WomwikiGraphHub")
 		end
-		table.insert(lines, "├" .. string.rep("─", max_width) .. "┤")
+		separator()
 	end
 
 	-- Orphan files (limited display)
 	if #orphans > 0 then
-		local max_orphans_shown = 10
-		table.insert(lines, "│ Orphan files (no connections):" .. string.rep(" ", max_width - 31) .. "│")
-
-		-- Sort orphans alphabetically
+		add("Orphan files (no connections):")
 		table.sort(orphans)
 
-		-- Show first N orphans
+		local max_orphans_shown = 10
 		local orphans_to_show = {}
 		for i = 1, math.min(max_orphans_shown, #orphans) do
 			table.insert(orphans_to_show, orphans[i])
@@ -464,35 +454,34 @@ function M.show()
 
 		local orphan_text = table.concat(orphans_to_show, ", ")
 		if #orphans > max_orphans_shown then
-			orphan_text = orphan_text .. " ... and " .. (#orphans - max_orphans_shown) .. " more"
+			orphan_text = orphan_text .. " … +" .. (#orphans - max_orphans_shown) .. " more"
 		end
 
 		-- Word wrap orphan list
 		local words = vim.split(orphan_text, ", ")
-		local current_line = "│   "
+		local current_line = "  "
 
 		for _, word in ipairs(words) do
-			if #current_line + #word + 2 > max_width - 1 then
-				table.insert(lines, current_line .. string.rep(" ", max_width - #current_line + 1) .. "│")
-				current_line = "│   " .. word
+			if #current_line + #word + 2 > max_width then
+				add(current_line, "WomwikiGraphOrphan")
+				current_line = "  " .. word
 			else
-				if current_line ~= "│   " then
+				if current_line ~= "  " then
 					current_line = current_line .. ", " .. word
 				else
 					current_line = current_line .. word
 				end
 			end
 		end
-		if current_line ~= "│   " then
-			table.insert(lines, current_line .. string.rep(" ", max_width - #current_line + 1) .. "│")
+		if current_line ~= "  " then
+			add(current_line, "WomwikiGraphOrphan")
 		end
-		table.insert(lines, "├" .. string.rep("─", max_width) .. "┤")
+		separator()
 	end
 
-	-- Instructions with help text
-	table.insert(lines, "├" .. string.rep("─", max_width) .. "┤")
-	table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphBorder" })
-	table.insert(lines, "│ Actions:" .. string.rep(" ", max_width - 9) .. "│")
+	-- Actions
+	add("")
+	add("Actions:")
 	local help_items = {
 		{ "[b]acklinks", "Find files that link to the current file" },
 		{ "[o]rphans", "Browse files with no connections at all" },
@@ -501,15 +490,9 @@ function M.show()
 		{ "[q]uit", "Close this window" },
 	}
 	for _, item in ipairs(help_items) do
-		local help_line = "│   " .. item[1] .. "  " .. item[2]
-		table.insert(lines, help_line .. string.rep(" ", max_width - #help_line + 1) .. "│")
-		table.insert(
-			highlights,
-			{ line = #lines - 1, hl_group = "WomwikiGraphKey", col_start = 4, col_end = 4 + #item[1] }
-		)
+		local help_line = "  " .. item[1] .. "  " .. item[2]
+		add(help_line, "WomwikiGraphKey", 2, 2 + #item[1])
 	end
-	table.insert(lines, "╰" .. string.rep("─", max_width) .. "╯")
-	table.insert(highlights, { line = #lines - 1, hl_group = "WomwikiGraphBorder" })
 
 	-- Display in floating window
 	local buf = vim.api.nvim_create_buf(false, true)
@@ -528,7 +511,14 @@ function M.show()
 	vim.bo[buf].modifiable = false
 	vim.bo[buf].buftype = "nofile"
 
-	local width = max_width + 2
+	-- Use actual content width for window sizing
+	local content_width = 0
+	for _, line in ipairs(lines) do
+		if #line > content_width then
+			content_width = #line
+		end
+	end
+	local width = math.min(math.max(content_width + 2, 50), vim.o.columns - 4)
 	local height = math.min(#lines, vim.o.lines - 4)
 	local win = vim.api.nvim_open_win(buf, true, {
 		relative = "editor",

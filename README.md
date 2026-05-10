@@ -4,6 +4,10 @@
 
 A Neovim plugin for managing your personal wiki.
 
+<p align="center">
+  <img src="demo.gif" alt="womwiki demo" width="800" />
+</p>
+
 ## Dependencies
 
 One of the following picker plugins is required:
