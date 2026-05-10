@@ -190,8 +190,9 @@ default_link_style ~
 ==============================================================================
 4. COMMANDS                                              *womwiki-commands*
 
-womwiki does not define user commands by default. All functionality is
-accessed through the picker menu (|<leader>w|) or keybindings.
+womwiki does not define user commands (`:Womwiki...`) by default. All
+functionality is accessed through the Lua API, the picker menu
+(|<leader>w|), or keybindings.
 
 The main entry points are:
 
@@ -343,10 +344,11 @@ womwiki.inbox() ~
 womwiki.tools_menu() ~
     Open the Tools submenu with options:
     
-    1: [E]dit Daily Template - Edit the daily note template
-    2: [C]leanup Empty Dailies - Find and delete unmodified daily notes
-    3: [M]odernize Headers - Update daily notes to wikilink nav format
-    4: [I]nbox - Open inbox file
+    1: [R]ename / Refactor - Rename file and update all inbound links
+    2: [E]dit Daily Template - Edit the daily note template
+    3: [C]leanup Empty Dailies - Find and delete unmodified daily notes
+    4: [M]odernize Headers - Update daily notes to wikilink nav format
+    5: [I]nbox - Open inbox file
 
                                                       *womwiki.analyze_menu()*
 womwiki.analyze_menu() ~
@@ -354,7 +356,21 @@ womwiki.analyze_menu() ~
     
     1: [B]acklinks - Search for files linking to current file
     2: [G]raph View - Display wiki link graph
-    3: [T]ags > - Open tags submenu
+    3: [V]alidate Links - Find broken/dangling links
+    4: [T]ags > - Open tags submenu
+
+                                                      *womwiki.rename_file()*
+womwiki.rename_file() ~
+    Rename the current wiki file. Prompts for a new name, then finds and
+    updates all inbound links across the wiki (markdown links, wikilinks,
+    and wikilinks with display text). Invalidates all caches after rename.
+
+                                                    *womwiki.validate_links()*
+womwiki.validate_links() ~
+    Find all broken/dangling links across the wiki. Shows results in your
+    configured picker, grouped by source file. Selecting a broken link
+    offers to create the missing target file. Also accessible from the
+    graph view via `v`.
 
                                                         *womwiki.tags_menu()*
 womwiki.tags_menu() ~
@@ -463,6 +479,7 @@ Navigation:
     b               Search backlinks to current file
     o               Browse orphan files in picker
     h               Browse hub files in picker
+    v               Find broken/dangling links
     e               Expand details for any file
     /               Search/filter all files
     f               Find files (same as wiki picker)
@@ -682,13 +699,16 @@ Customize by overriding in your config:
 Planned features for future releases:
 
 - Multiple Templates: Meeting notes, ADRs, 1:1s, incident reports
-- Rename & Refactor: Rename files with automatic backlink updates
-- Project Notes: Link notes to git repositories
-- Heading Search: Navigate by document structure across all files
-- Code Block Runner: Execute fenced code blocks
+- Multi-wiki / Workspace Switching
+- Link Concealing: `[[file|display]]` renders as just "display"
+- Full Frontmatter Metadata: title, date, aliases, custom fields
+- Search Filtering: Filter by date, tags, link count
+- TOC Generation from headings
 - Export: HTML/PDF export via Pandoc
 
 Recently completed:
+- Rename & Refactor: Rename files with automatic backlink updates ✓
+- Link Validation: Find broken/dangling links across the wiki ✓
 - Wikilinks: Support for `[[Page Name]]` syntax ✓
 - Tags & Frontmatter: `#tag` support and YAML frontmatter parsing ✓
 - Tag completion: Auto-complete existing tags ✓

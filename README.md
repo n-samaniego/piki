@@ -7,11 +7,12 @@ A Neovim plugin for managing your personal wiki.
 ## Dependencies
 
 One of the following picker plugins is required:
-- [fzf-lua](https://github.com/ibhagwan/fzf-lua) (fast, feature-rich) - **default**
+- [snacks.nvim](https://github.com/folke/snacks.nvim) (modern, fast) — **preferred**
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua) (fast, feature-rich)
 - [mini.pick](https://github.com/echasnovski/mini.nvim) (lightweight, modern)
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) (most popular)
 
-The plugin will automatically detect which one is available and use it.
+The plugin auto-detects which one is available (in the order above).
 
 ## Optional Enhancements
 
@@ -29,15 +30,15 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 {
   "wom/womwiki",
   dependencies = {
-    "ibhagwan/fzf-lua", -- Default picker (recommended)
+    "folke/snacks.nvim", -- Preferred picker (auto-detected)
     -- Alternatives (uncomment to use instead):
+    -- "ibhagwan/fzf-lua",
     -- "echasnovski/mini.nvim",
     -- "nvim-telescope/telescope.nvim",
   },
   config = function()
     require("womwiki").setup({
-      path = "~/src/wiki", -- Path to your wiki
-      picker = nil, -- Optional: 'telescope', 'mini', or 'fzf'. Defaults to auto-detect.
+      path = "~/wiki", -- Path to your wiki directory
     })
   end,
 }
@@ -45,12 +46,38 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ## Configuration
 
-Default configuration:
+Default configuration with all options:
 
 ```lua
 require("womwiki").setup({
-  path = "~/src/wiki", -- Default path
-  picker = nil, -- Optional: 'telescope', 'mini', or 'fzf'. Defaults to auto-detect.
+  path = "~/src/wiki",              -- Path to your wiki directory
+  picker = nil,                     -- "snacks", "fzf", "mini", "telescope", or nil (auto-detect)
+  default_link_style = "markdown",  -- "markdown" or "wikilink" for new links
+
+  inbox = {
+    file = "inbox.md",                        -- Inbox file, relative to wiki root
+    format = "- [ ] {{ datetime }} - {{ text }}", -- Entry format template
+    datetime_format = "%Y-%m-%d %H:%M",       -- strftime format for {{ datetime }}
+  },
+
+  completion = {
+    enabled = true,           -- Enable link/tag autocompletion
+    include_headings = true,  -- Offer headings in completion (file.md#heading)
+    max_results = 50,         -- Maximum completion results
+    cache_ttl = 300,          -- Cache expiry in seconds (also invalidated on save)
+  },
+
+  wikilinks = {
+    enabled = true,       -- Support [[wikilink]] syntax
+    spaces_to = "-",      -- Convert spaces: "-", "_", or nil (keep spaces)
+    confirm_create = true, -- Confirm before creating new files from links
+  },
+
+  tags = {
+    enabled = true,              -- Support #tags and frontmatter tags
+    inline_pattern = "#([%w_-]+)", -- Lua pattern for inline tags
+    use_frontmatter = true,      -- Parse YAML frontmatter for tags
+  },
 })
 ```
 
@@ -81,8 +108,10 @@ The main menu (`<leader>w`) provides quick access to common operations:
 **Analyze submenu:**
 - Backlinks - Show files that link to current note
 - Graph View - Visualize note connections
+- Validate Links - Find broken/dangling links across the wiki
 
 **Settings/Tools submenu:**
+- Rename / Refactor - Rename a note and update all inbound links
 - Edit Daily Template - Customize the template used for new daily notes
 - Cleanup Empty Dailies - Remove empty daily notes that match the template
 
