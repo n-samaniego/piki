@@ -1,7 +1,7 @@
 *piki.txt*  Personal wiki for Neovim                          *piki*
 
-Author:   wom
-Version:  0.0.2
+Author:   n-samaniego
+Version:  0.0.0
 License:  MIT
 
 ==============================================================================
@@ -26,7 +26,7 @@ CONTENTS                                                   *piki-contents*
 1. INTRODUCTION                                        *piki-introduction*
 
 piki is a personal wiki plugin for Neovim, designed as a simple, keyboard-driven
-note-taking workflow integrated into the editor.  Whatever `wom` found useful.
+note-taking workflow integrated into the editor.  Whatever n-samaniego found useful.
  
  Features:
 - Daily notes with customizable templates
