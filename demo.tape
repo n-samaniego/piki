@@ -1,4 +1,4 @@
-# womwiki demo recording
+# piki demo recording
 # Run: ~/go/bin/vhs demo.tape
 # Requires: ffmpeg, ttyd, chromium
 
@@ -12,7 +12,7 @@ Set Theme "Catppuccin Mocha"
 Set Shell bash
 
 # Uses your normal Neovim config for look & feel, but points
-# womwiki at a temp wiki so the demo has predictable content.
+# piki at a temp wiki so the demo has predictable content.
 # Run demo_setup.sh before this tape (or it runs automatically below).
 
 Hide
@@ -25,7 +25,7 @@ Show
 # SCENE 1: Open Neovim and the wiki menu
 # =====================================================================
 
-Type `nvim --cmd 'set noswapfile' +"lua require('womwiki').setup({path='/tmp/demo-wiki'})"`
+Type `nvim --cmd 'set noswapfile' +"lua require('piki').setup({path='/tmp/demo-wiki'})"`
 Enter
 Sleep 2s
 
@@ -48,7 +48,7 @@ Sleep 200ms
 Type "jA"
 Sleep 200ms
 Enter
-Type "- [x] Record womwiki demo"
+Type "- [x] Record piki demo"
 Sleep 500ms
 Enter
 Type "- [ ] Share on GitHub"

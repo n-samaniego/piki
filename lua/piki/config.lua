@@ -1,34 +1,34 @@
--- womwiki/config.lua
+-- piki/config.lua
 -- Shared configuration and state management
 
---- @class (exact) womwiki.InboxConfig
+--- @class (exact) piki.InboxConfig
 --- @field file string Inbox filename relative to wiki root
 --- @field format string Entry format template (supports {{ datetime }}, {{ text }})
 --- @field datetime_format string strftime format for {{ datetime }}
 
---- @class (exact) womwiki.CompletionConfig
+--- @class (exact) piki.CompletionConfig
 --- @field enabled boolean Enable link/tag completion
 --- @field include_headings boolean Include headings in completion results
 --- @field max_results integer Maximum number of completion results
 --- @field cache_ttl integer Seconds before file/tag caches expire (fallback; autocmd handles normal edits)
 
---- @class (exact) womwiki.WikilinksConfig
+--- @class (exact) piki.WikilinksConfig
 --- @field enabled boolean Support [[wikilink]] syntax
 --- @field spaces_to string? Convert spaces in link names: "-", "_", or nil to keep spaces
 --- @field confirm_create boolean Confirm before creating new files from links
 
---- @class (exact) womwiki.TagsConfig
+--- @class (exact) piki.TagsConfig
 --- @field enabled boolean Support #tags and frontmatter tags
 --- @field inline_pattern string Lua pattern for inline tags
 --- @field use_frontmatter boolean Parse YAML frontmatter for tags
 
---- @class (exact) womwiki.Config
+--- @class (exact) piki.Config
 --- @field path string Path to wiki root directory
 --- @field picker string? Picker backend: "telescope", "mini", "fzf", "snacks", or nil to auto-detect
---- @field inbox womwiki.InboxConfig
---- @field completion womwiki.CompletionConfig
---- @field wikilinks womwiki.WikilinksConfig
---- @field tags womwiki.TagsConfig
+--- @field inbox piki.InboxConfig
+--- @field completion piki.CompletionConfig
+--- @field wikilinks piki.WikilinksConfig
+--- @field tags piki.TagsConfig
 --- @field default_link_style "markdown"|"wikilink"
 
 local M = {}
@@ -43,7 +43,7 @@ M.patterns = {
 	HEADING_H1 = "^#%s+(.+)$",
 }
 
---- @type womwiki.Config
+--- @type piki.Config
 M.config = {
 	path = os.getenv("HOME") .. "/src/wiki",
 	picker = nil,
@@ -91,7 +91,7 @@ function M.update_paths()
 	else
 		M.wikidir = nil
 		M.dailydir = nil
-		vim.notify("womwiki: wiki directory does not exist: " .. symlink_path, vim.log.levels.ERROR)
+		vim.notify("piki: wiki directory does not exist: " .. symlink_path, vim.log.levels.ERROR)
 		return
 	end
 
@@ -108,13 +108,13 @@ function M.is_valid()
 	return stat ~= nil and stat.type == "directory"
 end
 
---- @param opts womwiki.Config.Partial?
+--- @param opts piki.Config.Partial?
 function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 	M.update_paths()
 end
 
 -- Initialize with defaults
-M.update_paths()
+-- M.update_paths() -- patched: defer until setup()
 
 return M

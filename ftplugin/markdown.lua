@@ -1,6 +1,6 @@
 ---@type vim
 local vim = vim
-local patterns = require("womwiki.config").patterns
+local patterns = require("piki.config").patterns
 
 vim.opt_local.tabstop = 2
 vim.opt_local.shiftwidth = 2
@@ -16,8 +16,8 @@ end
 
 -- Helper: Convert wikilink name to filename based on config
 local function wikilink_to_filename(link_name)
-	local womwiki = require("womwiki")
-	local spaces_to = womwiki.config.wikilinks.spaces_to
+	local piki = require("piki")
+	local spaces_to = piki.config.wikilinks.spaces_to
 	local filename = link_name
 
 	if spaces_to then
@@ -71,8 +71,8 @@ local function word_to_link()
 	local line = vim.api.nvim_get_current_line()
 	local col = vim.api.nvim_win_get_cursor(0)[2]
 	local row = vim.api.nvim_win_get_cursor(0)[1]
-	local womwiki = require("womwiki")
-	local link_style = womwiki.config.default_link_style or "markdown"
+	local piki = require("piki")
+	local link_style = piki.config.default_link_style or "markdown"
 
 	-- Check if cursor is over an existing markdown link [text](url)
 	for start_pos, text, url in line:gmatch("()%[([^%]]+)%]%(([^%)]*)%)") do
@@ -219,14 +219,14 @@ end
 local function follow_markdown_link()
 	local line = vim.api.nvim_get_current_line()
 	local col = vim.api.nvim_win_get_cursor(0)[2]
-	local womwiki = require("womwiki")
-	local wiki_root = womwiki.wikidir
+	local piki = require("piki")
+	local wiki_root = piki.wikidir
 	local current_dir = vim.fn.expand("%:p:h")
 
 	-- Helper to open file and jump to line
 	local function open_and_jump(path, line_anchor)
 		vim.cmd("edit " .. vim.fn.fnameescape(path))
-		vim.b.womwiki = true
+		vim.b.piki = true
 		if wiki_root then
 			vim.cmd("lcd " .. vim.fn.fnameescape(wiki_root))
 		end
@@ -297,7 +297,7 @@ local function follow_markdown_link()
 	end
 
 	-- Check for wikilinks first: [[link]] or [[link|display]]
-	if womwiki.config.wikilinks.enabled then
+	if piki.config.wikilinks.enabled then
 		for start_pos, link_content in line:gmatch("()%[%[([^%]]+)%]%]") do
 			local bracket_start = start_pos - 1
 			local bracket_end = start_pos + #link_content + 3 -- [[ + content + ]]
@@ -313,10 +313,10 @@ local function follow_markdown_link()
 
 				-- Handle special navigation links for daily notes
 				if link_target == "« Prev" then
-					require("womwiki.daily").prev()
+					require("piki.daily").prev()
 					return
 				elseif link_target == "Next »" then
-					require("womwiki.daily").next()
+					require("piki.daily").next()
 					return
 				end
 
@@ -479,19 +479,19 @@ vim.keymap.set("n", "<CR>", follow_markdown_link, {
 })
 
 -- Setup link autocompletion
-local has_womwiki, womwiki = pcall(require, "womwiki")
-if has_womwiki then
-	womwiki.setup_completion()
+local has_piki, piki = pcall(require, "piki")
+if has_piki then
+	piki.setup_completion()
 end
 
 -- Setup tag highlighting
-if has_womwiki and womwiki.config.tags and womwiki.config.tags.enabled then
+if has_piki and piki.config.tags and piki.config.tags.enabled then
 	-- Highlight inline #tags (but not in code blocks or URLs)
-	vim.fn.matchadd("WomwikiTag", "\\v(^|\\s)#[a-zA-Z0-9_-]+")
+	vim.fn.matchadd("PikiTag", "\\v(^|\\s)#[a-zA-Z0-9_-]+")
 end
 
 -- Auto-configure table.vim for wiki buffers
-if vim.b.womwiki then
+if vim.b.piki then
 	local has_table_vim = pcall(require, "table_vim")
 	if has_table_vim then
 		vim.fn["table#SetBufferConfig"]({

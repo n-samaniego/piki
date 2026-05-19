@@ -1,14 +1,15 @@
 # piki
 
->
-> piki is a fork of [womwiki](https://github.com/wom/womwiki)
+> [!note]
+> piki is a fork of [piki](https://github.com/wom/piki)
 
-[![CI](https://github.com/wom/womwiki/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wom/womwiki/actions/workflows/ci.yml)
+
+[![CI](https://github.com/wom/piki/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wom/piki/actions/workflows/ci.yml)
 
 A Neovim plugin for managing your personal wiki.
 
 <p align="center">
-  <img src="demo.gif" alt="womwiki demo" width="800" />
+  <img src="demo.gif" alt="piki demo" width="800" />
 </p>
 
 ## Features
@@ -48,7 +49,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-  "wom/womwiki",
+  "wom/piki",
   dependencies = {
     "folke/snacks.nvim", -- Preferred picker (auto-detected)
     -- Alternatives (uncomment to use instead):
@@ -57,7 +58,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
     -- "nvim-telescope/telescope.nvim",
   },
   config = function()
-    require("womwiki").setup({
+    require("piki").setup({
       path = "~/wiki", -- Path to your wiki directory
     })
   end,
@@ -69,7 +70,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 Default configuration with all options:
 
 ```lua
-require("womwiki").setup({
+require("piki").setup({
   path = "~/src/wiki",              -- Path to your wiki directory
   picker = nil,                     -- "snacks", "fzf", "mini", "telescope", or nil (auto-detect)
   default_link_style = "markdown",  -- "markdown" or "wikilink" for new links
@@ -103,7 +104,7 @@ require("womwiki").setup({
 
 ## Keymaps
 
-Global mappings (can be disabled by setting `vim.g.womwiki_disable_mappings = true`):
+Global mappings (can be disabled by setting `vim.g.piki_disable_mappings = true`):
 - `<leader>w`: Open wiki menu
 - `<leader>wb`: Show backlinks
 - `<leader>wg`: Show graph view
@@ -182,7 +183,7 @@ Markdown buffer mappings:
 
 ## Completion
 
-womwiki provides link completion when typing `](`, `[[`, or `#` in markdown files. It supports both **nvim-cmp** and **blink.cmp**.
+piki provides link completion when typing `](`, `[[`, or `#` in markdown files. It supports both **nvim-cmp** and **blink.cmp**.
 
 ### blink.cmp Setup
 
@@ -191,11 +192,11 @@ womwiki provides link completion when typing `](`, `[[`, or `#` in markdown file
   'saghen/blink.cmp',
   opts = {
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer', 'womwiki' },
+      default = { 'lsp', 'path', 'snippets', 'buffer', 'piki' },
       providers = {
-        womwiki = {
-          name = 'womwiki',
-          module = 'blink_womwiki',
+        piki = {
+          name = 'piki',
+          module = 'blink_piki',
           score_offset = 10, -- Boost wiki completions
           enabled = function()
             return vim.bo.filetype == 'markdown'
@@ -218,7 +219,7 @@ The source is automatically registered when nvim-cmp is detected. To manually co
     local cmp = require('cmp')
     cmp.setup({
       sources = cmp.config.sources({
-        { name = 'womwiki' },
+        { name = 'piki' },
         -- ... other sources
       }),
     })

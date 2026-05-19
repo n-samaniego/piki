@@ -1,4 +1,4 @@
--- womwiki/init.lua
+-- piki/init.lua
 -- Main entry point - re-exports all modules for backward compatibility
 -- This thin module provides the public API surface
 
@@ -7,15 +7,15 @@ local M = {}
 M.version = "0.0.2"
 
 -- Load all submodules
-local config = require("womwiki.config")
-local utils = require("womwiki.utils")
-local daily = require("womwiki.daily")
-local calendar = require("womwiki.calendar")
-local capture = require("womwiki.capture")
-local files = require("womwiki.files")
-local menu = require("womwiki.menu")
-local graph = require("womwiki.graph")
-local tags = require("womwiki.tags")
+local config = require("piki.config")
+local utils = require("piki.utils")
+local daily = require("piki.daily")
+local calendar = require("piki.calendar")
+local capture = require("piki.capture")
+local files = require("piki.files")
+local menu = require("piki.menu")
+local graph = require("piki.graph")
+local tags = require("piki.tags")
 
 --------------------------------------------------------------------------------
 -- Configuration (re-export from config module)
@@ -25,7 +25,7 @@ M.config = config.config
 M.wikidir = config.wikidir
 M.dailydir = config.dailydir
 
---- @param opts womwiki.Config.Partial?
+--- @param opts piki.Config.Partial?
 function M.setup(opts)
 	config.setup(opts)
 	-- Update our re-exported references
@@ -36,7 +36,7 @@ function M.setup(opts)
 	utils.setup_graph_highlights()
 
 	-- Invalidate file and tag caches when any .md file in the wiki is saved
-	local augroup = vim.api.nvim_create_augroup("WomwikiCacheInvalidation", { clear = true })
+	local augroup = vim.api.nvim_create_augroup("PikiCacheInvalidation", { clear = true })
 	vim.api.nvim_create_autocmd("BufWritePost", {
 		group = augroup,
 		pattern = "*.md",
@@ -177,13 +177,13 @@ function M.setup_completion()
 	if not config.config.completion.enabled then
 		return
 	end
-	vim.bo[0].omnifunc = "v:lua.require'womwiki'.link_complete"
+	vim.bo[0].omnifunc = "v:lua.require'piki'.link_complete"
 
 	local has_cmp, cmp = pcall(require, "cmp")
 	if has_cmp then
-		local has_source, cmp_womwiki = pcall(require, "cmp_womwiki")
+		local has_source, cmp_piki = pcall(require, "cmp_piki")
 		if has_source then
-			cmp.register_source("womwiki", cmp_womwiki.new())
+			cmp.register_source("piki", cmp_piki.new())
 		end
 	end
 end
@@ -196,7 +196,7 @@ M.show_menu = menu.show
 
 -- Helper to check if current buffer is today's daily note
 local function is_today_daily_open()
-	if not vim.b.womwiki then
+	if not vim.b.piki then
 		return false
 	end
 	local today = os.date("%Y-%m-%d")
@@ -279,7 +279,7 @@ end
 
 -- Main picker entry point
 function M.picker()
-	M.show_menu(get_main_choices(), "womwiki")
+	M.show_menu(get_main_choices(), "piki")
 end
 
 --------------------------------------------------------------------------------

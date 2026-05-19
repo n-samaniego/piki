@@ -1,7 +1,7 @@
--- womwiki/calendar.lua
+-- piki/calendar.lua
 -- Interactive calendar view for navigating daily notes
 
-local daily = require("womwiki.daily")
+local daily = require("piki.daily")
 
 local M = {}
 

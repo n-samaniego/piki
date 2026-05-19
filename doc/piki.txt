@@ -1,31 +1,31 @@
-*womwiki.txt*  Personal wiki for Neovim                          *womwiki*
+*piki.txt*  Personal wiki for Neovim                          *piki*
 
 Author:   wom
 Version:  0.0.2
 License:  MIT
 
 ==============================================================================
-CONTENTS                                                   *womwiki-contents*
+CONTENTS                                                   *piki-contents*
 
-    1. Introduction .......................... |womwiki-introduction|
-    2. Setup ................................. |womwiki-setup|
-    3. Configuration ......................... |womwiki-configuration|
-    4. Commands .............................. |womwiki-commands|
-    5. Keybindings ........................... |womwiki-keybindings|
-    6. Calendar .............................. |womwiki-calendar|
-    7. Graph View ............................ |womwiki-graph|
-    8. Backlinks ............................. |womwiki-backlinks|
-    9. Tags .................................. |womwiki-tags|
-   10. Wikilinks ............................. |womwiki-wikilinks|
-   11. Link Completion ....................... |womwiki-completion|
-   12. Templates ............................. |womwiki-templates|
-   13. Highlight Groups ...................... |womwiki-highlights|
-   14. Roadmap ............................... |womwiki-roadmap|
+    1. Introduction .......................... |piki-introduction|
+    2. Setup ................................. |piki-setup|
+    3. Configuration ......................... |piki-configuration|
+    4. Commands .............................. |piki-commands|
+    5. Keybindings ........................... |piki-keybindings|
+    6. Calendar .............................. |piki-calendar|
+    7. Graph View ............................ |piki-graph|
+    8. Backlinks ............................. |piki-backlinks|
+    9. Tags .................................. |piki-tags|
+   10. Wikilinks ............................. |piki-wikilinks|
+   11. Link Completion ....................... |piki-completion|
+   12. Templates ............................. |piki-templates|
+   13. Highlight Groups ...................... |piki-highlights|
+   14. Roadmap ............................... |piki-roadmap|
 
 ==============================================================================
-1. INTRODUCTION                                        *womwiki-introduction*
+1. INTRODUCTION                                        *piki-introduction*
 
-womwiki is a personal wiki plugin for Neovim, designed as a simple, keyboard-driven
+piki is a personal wiki plugin for Neovim, designed as a simple, keyboard-driven
 note-taking workflow integrated into the editor.  Whatever `wom` found useful.
  
  Features:
@@ -41,11 +41,11 @@ note-taking workflow integrated into the editor.  Whatever `wom` found useful.
 - Link autocompletion for files, headings, and tags
 
 ==============================================================================
-2. SETUP                                                    *womwiki-setup*
+2. SETUP                                                    *piki-setup*
 
 Install with your package manager of choice, then call setup():
 >lua
-    require("womwiki").setup({
+    require("piki").setup({
         path = "~/wiki",        -- Path to your wiki directory
         picker = nil,           -- Auto-detect, or: 'telescope', 'mini', 'fzf', 'snacks'
     })
@@ -63,16 +63,16 @@ Directory structure created automatically:
     └── *.md                # Wiki pages
 <
 ==============================================================================
-3. CONFIGURATION                                    *womwiki-configuration*
+3. CONFIGURATION                                    *piki-configuration*
 
-                                                          *womwiki.config.path*
+                                                          *piki.config.path*
 path ~
     Type: `string`
     Default: `"~/src/wiki"`
 
     Absolute path to your wiki directory. Supports `~` expansion and symlinks.
 
-                                                        *womwiki.config.picker*
+                                                        *piki.config.picker*
 picker ~
     Type: `string|nil`
     Default: `nil` (auto-detect)
@@ -81,15 +81,15 @@ picker ~
     Which fuzzy picker to use. When `nil`, auto-detects in order:
     snacks → fzf-lua → mini.pick → telescope
 
-                                        *vim.g.womwiki_disable_mappings*
-vim.g.womwiki_disable_mappings ~
+                                        *vim.g.piki_disable_mappings*
+vim.g.piki_disable_mappings ~
     Type: `boolean`
     Default: `false`
 
     Set to `true` before loading the plugin to disable default global
     keybindings. You can then define your own.
 
-                                                      *womwiki.config.inbox*
+                                                      *piki.config.inbox*
 inbox ~
     Type: `table`
     Configuration for the Quick Capture / Inbox system.
@@ -109,7 +109,7 @@ inbox ~
         Default: `"%Y-%m-%d %H:%M"`
         Date/time format string (Lua os.date format).
 
-                                                  *womwiki.config.completion*
+                                                  *piki.config.completion*
 completion ~
     Type: `table`
     Configuration for link autocompletion.
@@ -136,7 +136,7 @@ completion ~
         invalidated automatically on `BufWritePost` for wiki files,
         so this TTL is mainly a fallback.
 
-                                                  *womwiki.config.wikilinks*
+                                                  *piki.config.wikilinks*
 wikilinks ~
     Type: `table`
     Configuration for [[wikilink]] syntax support.
@@ -157,7 +157,7 @@ wikilinks ~
         Default: `true`
         Confirm before creating new files when following wikilinks.
 
-                                                      *womwiki.config.tags*
+                                                      *piki.config.tags*
 tags ~
     Type: `table`
     Configuration for tag parsing and indexing.
@@ -177,7 +177,7 @@ tags ~
         Default: `true`
         Parse YAML frontmatter for tags.
 
-                                            *womwiki.config.default_link_style*
+                                            *piki.config.default_link_style*
 default_link_style ~
     Type: `string`
     Default: `"markdown"`
@@ -188,17 +188,17 @@ default_link_style ~
     - `"wikilink"`: Creates `[[file]]` links
 
 ==============================================================================
-4. COMMANDS                                              *womwiki-commands*
+4. COMMANDS                                              *piki-commands*
 
-womwiki does not define user commands (`:Womwiki...`) by default. All
+piki does not define user commands (`:Piki...`) by default. All
 functionality is accessed through the Lua API, the picker menu
 (|<leader>w|), or keybindings.
 
 The main entry points are:
 
-                                                            *womwiki.picker()*
-womwiki.picker() ~
-    Open the main womwiki menu. Access via |<leader>w| by default.
+                                                            *piki.picker()*
+piki.picker() ~
+    Open the main piki menu. Access via |<leader>w| by default.
     
     Menu items support both number keys (1-8) and letter hotkeys:
 
@@ -217,54 +217,54 @@ womwiki.picker() ~
         {days_offset}  (number|nil)  Days from today. Default: 0 (today)
                                      Use -1 for yesterday, 1 for tomorrow.
 
-                                                        *womwiki.close_daily()*
-womwiki.close_daily() ~
-    Close the current daily note buffer (if it's a womwiki buffer).
+                                                        *piki.close_daily()*
+piki.close_daily() ~
+    Close the current daily note buffer (if it's a piki buffer).
 
-                                                              *womwiki.wiki()*
-womwiki.wiki() ~
+                                                              *piki.wiki()*
+piki.wiki() ~
     Open picker to browse all wiki files.
 
-                                                           *womwiki.dailies()*
-womwiki.dailies() ~
+                                                           *piki.dailies()*
+piki.dailies() ~
     Open picker to browse daily notes.
 
-                                                            *womwiki.search()*
-womwiki.search() ~
+                                                            *piki.search()*
+piki.search() ~
     Live grep search through all wiki files.
 
-                                                            *womwiki.recent()*
-womwiki.recent() ~
+                                                            *piki.recent()*
+piki.recent() ~
     Browse recently opened wiki files from |v:oldfiles|.
 
-                                                       *womwiki.create_file()*
-womwiki.create_file() ~
+                                                       *piki.create_file()*
+piki.create_file() ~
     Create a new wiki file. Prompts for folder selection, then filename.
 
-                                                          *womwiki.calendar()*
-womwiki.calendar() ~
-    Open calendar view for navigating daily notes. See |womwiki-calendar|.
+                                                          *piki.calendar()*
+piki.calendar() ~
+    Open calendar view for navigating daily notes. See |piki-calendar|.
 
-                                                        *womwiki.backlinks()*
-womwiki.backlinks() ~
-    Search for files that link to the current file. See |womwiki-backlinks|.
+                                                        *piki.backlinks()*
+piki.backlinks() ~
+    Search for files that link to the current file. See |piki-backlinks|.
 
-                                                        *womwiki.show_graph()*
-womwiki.show_graph() ~
-    Display wiki link graph visualization. See |womwiki-graph|.
+                                                        *piki.show_graph()*
+piki.show_graph() ~
+    Display wiki link graph visualization. See |piki-graph|.
 
-                                                           *womwiki.cleanup()*
-womwiki.cleanup() ~
+                                                           *piki.cleanup()*
+piki.cleanup() ~
     Find and delete unmodified daily notes (notes that match the template
     exactly, with no user changes).
 
-                                                 *womwiki.edit_daily_template()*
-womwiki.edit_daily_template() ~
+                                                 *piki.edit_daily_template()*
+piki.edit_daily_template() ~
     Edit the daily note template. Creates `.templates/daily.md` in your wiki
     directory if it doesn't exist.
 
-                                              *womwiki.modernize_daily_headers()*
-womwiki.modernize_daily_headers() ~
+                                              *piki.modernize_daily_headers()*
+piki.modernize_daily_headers() ~
     Update daily notes to use the modern wikilink navigation format.
     
     Old format: `<!-- [« Prev](prev) | [Next »](next) -->`
@@ -274,22 +274,22 @@ womwiki.modernize_daily_headers() ~
     of files already modern and files skipped due to ambiguous format),
     and requires confirmation before making changes.
 
-                                                        *womwiki.list_tags()*
-womwiki.list_tags() ~
+                                                        *piki.list_tags()*
+piki.list_tags() ~
     Browse all tags in the wiki with file counts. Uses your configured
-    picker to display tags. Selecting a tag opens |womwiki.filter_by_tag()|.
-    See |womwiki-tags| for details.
+    picker to display tags. Selecting a tag opens |piki.filter_by_tag()|.
+    See |piki-tags| for details.
 
-                                                     *womwiki.filter_by_tag()*
-womwiki.filter_by_tag({tag}) ~
+                                                     *piki.filter_by_tag()*
+piki.filter_by_tag({tag}) ~
     Show all files containing the specified tag. If {tag} is nil, prompts
     for tag selection first.
     
     Parameters:
         {tag}  (string|nil)  Tag to filter by. Prompts if nil.
 
-                                                          *womwiki.add_tag()*
-womwiki.add_tag({tag}) ~
+                                                          *piki.add_tag()*
+piki.add_tag({tag}) ~
     Add a tag to the current file. If the file has YAML frontmatter,
     adds to the `tags:` array. Otherwise, appends an inline tag to the
     first heading line.
@@ -297,18 +297,18 @@ womwiki.add_tag({tag}) ~
     Parameters:
         {tag}  (string|nil)  Tag to add (without #). Prompts if nil.
 
-                                                        *womwiki.daily_prev()*
-womwiki.daily_prev() ~
+                                                        *piki.daily_prev()*
+piki.daily_prev() ~
     Navigate to the previous existing daily note. Does not create new files.
     Only works when in a daily note buffer.
 
-                                                        *womwiki.daily_next()*
-womwiki.daily_next() ~
+                                                        *piki.daily_next()*
+piki.daily_next() ~
     Navigate to the next existing daily note. Does not create new files.
     Only works when in a daily note buffer.
 
-                                                           *womwiki.capture()*
-womwiki.capture({text}, {include_location}) ~
+                                                           *piki.capture()*
+piki.capture({text}, {include_location}) ~
     Capture a thought to the inbox file. If {text} is provided, appends it
     directly. Otherwise, prompts for input.
     
@@ -317,12 +317,12 @@ womwiki.capture({text}, {include_location}) ~
         {include_location}  (boolean|nil)  If true, appends a markdown link
                                            to current file:line.
     
-    The entry format is configurable via |womwiki.config.inbox|.
+    The entry format is configurable via |piki.config.inbox|.
     Default format: `- [ ] 2026-01-28 14:32 - Your thought here`
     With location:  `- [ ] 2026-01-28 14:32 - text [file.lua:42](path#L42)`
 
-                                             *womwiki.capture_with_location()*
-womwiki.capture_with_location({text}) ~
+                                             *piki.capture_with_location()*
+piki.capture_with_location({text}) ~
     Capture a thought with a link to the current file and line number.
     The link format `[file:line](path#L42)` is clickable with `gf`/`<CR>`
     and will jump directly to that line.
@@ -330,18 +330,18 @@ womwiki.capture_with_location({text}) ~
     Parameters:
         {text}  (string|nil)  Text to capture. Prompts if nil.
 
-                                                    *womwiki.capture_visual()*
-womwiki.capture_visual() ~
+                                                    *piki.capture_visual()*
+piki.capture_visual() ~
     Capture the current visual selection to the inbox file.
     Always includes a location link to where the selection was made.
 
-                                                             *womwiki.inbox()*
-womwiki.inbox() ~
+                                                             *piki.inbox()*
+piki.inbox() ~
     Open the inbox file for review and processing. Creates the inbox file
     with a default header if it doesn't exist.
 
-                                                        *womwiki.tools_menu()*
-womwiki.tools_menu() ~
+                                                        *piki.tools_menu()*
+piki.tools_menu() ~
     Open the Tools submenu with options:
     
     1: [R]ename / Refactor - Rename file and update all inbound links
@@ -350,8 +350,8 @@ womwiki.tools_menu() ~
     4: [M]odernize Headers - Update daily notes to wikilink nav format
     5: [I]nbox - Open inbox file
 
-                                                      *womwiki.analyze_menu()*
-womwiki.analyze_menu() ~
+                                                      *piki.analyze_menu()*
+piki.analyze_menu() ~
     Open the Analyze submenu with options:
     
     1: [B]acklinks - Search for files linking to current file
@@ -359,21 +359,21 @@ womwiki.analyze_menu() ~
     3: [V]alidate Links - Find broken/dangling links
     4: [T]ags > - Open tags submenu
 
-                                                      *womwiki.rename_file()*
-womwiki.rename_file() ~
+                                                      *piki.rename_file()*
+piki.rename_file() ~
     Rename the current wiki file. Prompts for a new name, then finds and
     updates all inbound links across the wiki (markdown links, wikilinks,
     and wikilinks with display text). Invalidates all caches after rename.
 
-                                                    *womwiki.validate_links()*
-womwiki.validate_links() ~
+                                                    *piki.validate_links()*
+piki.validate_links() ~
     Find all broken/dangling links across the wiki. Shows results in your
     configured picker, grouped by source file. Selecting a broken link
     offers to create the missing target file. Also accessible from the
     graph view via `v`.
 
-                                                        *womwiki.tags_menu()*
-womwiki.tags_menu() ~
+                                                        *piki.tags_menu()*
+piki.tags_menu() ~
     Open the Tags submenu with options:
     
     1: [L]ist All Tags - Browse tags with file counts
@@ -381,21 +381,21 @@ womwiki.tags_menu() ~
     3: [A]dd Tag to File - Add tag to current file
 
 ==============================================================================
-5. KEYBINDINGS                                        *womwiki-keybindings*
+5. KEYBINDINGS                                        *piki-keybindings*
 
 GLOBAL KEYBINDINGS ~
 
 These are set globally when the plugin loads (unless disabled with
-|vim.g.womwiki_disable_mappings|):
+|vim.g.piki_disable_mappings|):
 
-    <leader>w       Open womwiki menu            |womwiki.picker()|
-    <leader>wb      Search backlinks             |womwiki.backlinks()|
-    <leader>wg      Show graph view              |womwiki.show_graph()|
-    <leader>wq      Quick capture (prompts)      |womwiki.capture()|
-    <leader>wQ      Capture + location link      |womwiki.capture_with_location()|
-    <leader>wq      Capture visual selection     |womwiki.capture_visual()|
+    <leader>w       Open piki menu            |piki.picker()|
+    <leader>wb      Search backlinks             |piki.backlinks()|
+    <leader>wg      Show graph view              |piki.show_graph()|
+    <leader>wq      Quick capture (prompts)      |piki.capture()|
+    <leader>wQ      Capture + location link      |piki.capture_with_location()|
+    <leader>wq      Capture visual selection     |piki.capture_visual()|
                     (in visual mode, includes location)
-    <leader>wi      Open inbox                   |womwiki.inbox()|
+    <leader>wi      Open inbox                   |piki.inbox()|
 MARKDOWN BUFFER KEYBINDINGS ~
 
 These are set buffer-locally for markdown files via ftplugin:
@@ -429,11 +429,11 @@ Pressing <CR> on `[[« Prev]]` or `[[Next »]]` navigates to adjacent daily
 notes. This uses the same link-following logic as other wikilinks.
 
 ==============================================================================
-6. CALENDAR                                              *womwiki-calendar*
+6. CALENDAR                                              *piki-calendar*
 
 The calendar view provides a visual way to navigate daily notes.
 
-Open with: |womwiki.calendar()| or via the main menu.
+Open with: |piki.calendar()| or via the main menu.
 
 Display:
 >
@@ -463,11 +463,11 @@ Navigation:
     q / <Esc>       Close calendar
 
 ==============================================================================
-7. GRAPH VIEW                                              *womwiki-graph*
+7. GRAPH VIEW                                              *piki-graph*
 
 The graph view shows wiki link relationships and statistics.
 
-Open with: |womwiki.show_graph()| or |<leader>wg|.
+Open with: |piki.show_graph()| or |<leader>wg|.
 
 Display includes:
 - Total files, links, and average links per file
@@ -490,11 +490,11 @@ Terminology:
     Orphans         Files with no connections at all
 
 ==============================================================================
-8. BACKLINKS                                            *womwiki-backlinks*
+8. BACKLINKS                                            *piki-backlinks*
 
 Backlinks shows all files that contain a link to the current file.
 
-Open with: |womwiki.backlinks()| or |<leader>wb|.
+Open with: |piki.backlinks()| or |<leader>wb|.
 
 The search looks for links in these formats:
 - Markdown links: `[text](filename)` or `[text](filename.md)`
@@ -503,9 +503,9 @@ The search looks for links in these formats:
 Results appear in your configured picker with file preview.
 
 ==============================================================================
-9. TAGS                                                    *womwiki-tags*
+9. TAGS                                                    *piki-tags*
 
-womwiki supports tags via YAML frontmatter and inline #tags in documents.
+piki supports tags via YAML frontmatter and inline #tags in documents.
 
 TAG FORMATS ~
 
@@ -530,13 +530,13 @@ Inline tags:
     This is about #neovim configuration.
 <
 Inline tags are detected anywhere in the document except inside code blocks.
-The pattern is configurable via |womwiki.config.tags|.
+The pattern is configurable via |piki.config.tags|.
 
 COMMANDS ~
 
-|womwiki.list_tags()|      Browse all tags with file counts
-|womwiki.filter_by_tag()|  Show files with a specific tag
-|womwiki.add_tag()|        Add a tag to the current file
+|piki.list_tags()|      Browse all tags with file counts
+|piki.filter_by_tag()|  Show files with a specific tag
+|piki.add_tag()|        Add a tag to the current file
 
 TAGS MENU ~
 
@@ -561,9 +561,9 @@ background, so completion never blocks the editor. If `rg` (ripgrep) is
 available, tag scanning uses it for faster rebuilds.
 
 ==============================================================================
-10. WIKILINKS                                          *womwiki-wikilinks*
+10. WIKILINKS                                          *piki-wikilinks*
 
-womwiki supports `[[wikilink]]` syntax alongside standard markdown links.
+piki supports `[[wikilink]]` syntax alongside standard markdown links.
 Wikilinks are faster to type and popular in tools like Obsidian.
 
 SYNTAX ~
@@ -574,11 +574,11 @@ With alias:  `[[Page Name|display text]]`
 RENDERED OUTPUT ~
 
 `[[Page Name]]` displays as "Page Name" and links to `page-name.md`
-(with spaces converted based on |womwiki.config.wikilinks.spaces_to|).
+(with spaces converted based on |piki.config.wikilinks.spaces_to|).
 
 RESOLUTION ~
 
-When following a wikilink, womwiki searches in this order:
+When following a wikilink, piki searches in this order:
 1. Exact match at wiki root
 2. Case-insensitive match at wiki root
 3. Exact match in subdirectories
@@ -595,13 +595,13 @@ These are handled specially and don't create files.
 
 CONFIGURATION ~
 
-See |womwiki.config.wikilinks| for configuration options.
-See |womwiki.config.default_link_style| to set wikilinks as default.
+See |piki.config.wikilinks| for configuration options.
+See |piki.config.default_link_style| to set wikilinks as default.
 
 ==============================================================================
-11. LINK COMPLETION                                  *womwiki-completion*
+11. LINK COMPLETION                                  *piki-completion*
 
-womwiki provides autocompletion for markdown links, wikilinks, and tags.
+piki provides autocompletion for markdown links, wikilinks, and tags.
 
 TRIGGERS ~
 
@@ -619,11 +619,11 @@ FEATURES ~
 
 SETUP WITH NVIM-CMP ~
 
-If you use nvim-cmp, add the womwiki source to your configuration:
+If you use nvim-cmp, add the piki source to your configuration:
 >lua
     require("cmp").setup({
       sources = {
-        { name = "womwiki" },
+        { name = "piki" },
         -- your other sources...
       },
     })
@@ -647,7 +647,7 @@ After typing a filename, add `#` to complete headings:
 Headings are converted to GitHub-style slugs (lowercase, hyphens).
 
 ==============================================================================
-12. TEMPLATES                                            *womwiki-templates*
+12. TEMPLATES                                            *piki-templates*
 
 Daily notes are created from a template with variable substitution.
 
@@ -659,7 +659,7 @@ Template resolution order:
 Template variables:
     {{ date }}      Current date as YYYY-MM-DD
 
-Edit template: Use |womwiki.edit_daily_template()| or Settings/Tools menu.
+Edit template: Use |piki.edit_daily_template()| or Settings/Tools menu.
 
 Default template:
 >markdown
@@ -673,28 +673,28 @@ Default template:
     ## Log
 <
 The nav line at the top uses wikilinks for daily note navigation.
-See |womwiki-wikilinks| for details.
+See |piki-wikilinks| for details.
 
 ==============================================================================
-13. HIGHLIGHT GROUPS                                  *womwiki-highlights*
+13. HIGHLIGHT GROUPS                                  *piki-highlights*
 
-womwiki defines the following highlight groups:
+piki defines the following highlight groups:
 
-    WomwikiTag          Inline #tags (default: links to Identifier)
-    WomwikiGraphHeader  Graph view title (links to Title)
-    WomwikiGraphStats   Statistics numbers (links to Number)
-    WomwikiGraphHub     Well-connected files (links to String)
-    WomwikiGraphOrphan  Disconnected files (links to Comment)
-    WomwikiGraphCurrent Current file indicator (links to Special)
-    WomwikiGraphKey     Keyboard shortcut hints (links to Keyword)
-    WomwikiGraphBorder  Float window border (links to FloatBorder)
+    PikiTag          Inline #tags (default: links to Identifier)
+    PikiGraphHeader  Graph view title (links to Title)
+    PikiGraphStats   Statistics numbers (links to Number)
+    PikiGraphHub     Well-connected files (links to String)
+    PikiGraphOrphan  Disconnected files (links to Comment)
+    PikiGraphCurrent Current file indicator (links to Special)
+    PikiGraphKey     Keyboard shortcut hints (links to Keyword)
+    PikiGraphBorder  Float window border (links to FloatBorder)
 
 Customize by overriding in your config:
 >lua
-    vim.api.nvim_set_hl(0, "WomwikiTag", { fg = "#e0af68", bold = true })
+    vim.api.nvim_set_hl(0, "PikiTag", { fg = "#e0af68", bold = true })
 <
 ==============================================================================
-14. ROADMAP                                              *womwiki-roadmap*
+14. ROADMAP                                              *piki-roadmap*
 
 Planned features for future releases:
 

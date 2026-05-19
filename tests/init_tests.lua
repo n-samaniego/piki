@@ -4,7 +4,7 @@
 -- Disable built-in plugins
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-vim.g.womwiki_disable_mappings = true
+vim.g.piki_disable_mappings = true
 
 -- Reset runtimepath and add plugin
 vim.cmd([[set runtimepath=$VIMRUNTIME]])

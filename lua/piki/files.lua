@@ -1,9 +1,9 @@
--- womwiki/files.lua
+-- piki/files.lua
 -- File navigation: wiki, dailies, recent, search, create
 
-local config = require("womwiki.config")
+local config = require("piki.config")
 local patterns = config.patterns
-local utils = require("womwiki.utils")
+local utils = require("piki.utils")
 
 local M = {}
 
@@ -22,7 +22,7 @@ end
 --- Open picker to find files in the wiki directory
 function M.wiki()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -45,7 +45,7 @@ end
 --- Open picker to find files in the daily directory
 function M.dailies()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -137,7 +137,7 @@ end
 --- Open recent wiki files using the available picker
 function M.recent()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -167,7 +167,7 @@ end
 --- Search through wiki files using the available picker
 function M.search()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -296,7 +296,7 @@ M._replace_link_references = replace_link_references
 --- Rename a wiki file and update all inbound links across the wiki
 function M.rename()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -328,7 +328,7 @@ function M.rename()
 		end
 
 		-- Get graph to find all files that link to this one
-		local graph = require("womwiki.graph")
+		local graph = require("piki.graph")
 		local link_graph = graph.get_link_graph()
 		local node = link_graph[old_key]
 
@@ -362,7 +362,7 @@ function M.rename()
 
 		-- Invalidate all caches
 		M.invalidate_cache()
-		require("womwiki.tags").invalidate_cache()
+		require("piki.tags").invalidate_cache()
 		graph.invalidate_cache()
 
 		local msg = "Renamed to " .. new_relative

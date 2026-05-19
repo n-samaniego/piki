@@ -1,9 +1,9 @@
--- womwiki/tags.lua
+-- piki/tags.lua
 -- Tags and frontmatter support: parse, index, browse, filter
 
-local config = require("womwiki.config")
+local config = require("piki.config")
 local patterns = config.patterns
-local utils = require("womwiki.utils")
+local utils = require("piki.utils")
 
 local M = {}
 
@@ -314,7 +314,7 @@ end
 --- Build tag index from all wiki files
 --- @return table Tag index {tag -> [{path, title, full_path}, ...]}
 function M.build_tag_index()
-	local files_mod = require("womwiki.files")
+	local files_mod = require("piki.files")
 	local wiki_files = files_mod.get_wiki_files()
 
 	M.cache.index = {}
@@ -467,7 +467,7 @@ end
 --- List all tags with counts (picker)
 function M.list_tags()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -549,7 +549,7 @@ end
 --- @param tag string|nil Tag to filter by (prompts if nil)
 function M.filter_by_tag(tag)
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 

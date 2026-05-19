@@ -3,8 +3,8 @@ local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
 -- Setup config (no picker installed in headless)
-require("womwiki.config").setup({ path = "/tmp/test-wiki" })
-local utils = require("womwiki.utils")
+require("piki.config").setup({ path = "/tmp/test-wiki" })
+local utils = require("piki.utils")
 
 local T = new_set()
 
@@ -65,7 +65,7 @@ T["get_picker"] = picker
 picker["returns nil when no picker installed"] = function()
 	-- In headless test env, mini.pick IS available (from mini.nvim).
 	-- Test that explicitly configured nonexistent picker returns nil.
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_picker = config.config.picker
 	config.config.picker = "snacks"
 
@@ -78,7 +78,7 @@ picker["returns nil when no picker installed"] = function()
 end
 
 picker["returns nil for unconfigured specific picker"] = function()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_picker = config.config.picker
 	config.config.picker = "telescope"
 
@@ -91,7 +91,7 @@ end
 
 picker["auto-detects mini.pick in test environment"] = function()
 	-- mini.nvim is in runtimepath for tests, so mini.pick should be found
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_picker = config.config.picker
 	config.config.picker = nil
 
@@ -126,7 +126,7 @@ file_io["read_file reads file contents"] = function()
 end
 
 file_io["read_file returns nil for missing file"] = function()
-	local content, err = utils.read_file("/tmp/nonexistent_womwiki_test_file")
+	local content, err = utils.read_file("/tmp/nonexistent_piki_test_file")
 	eq(content, nil)
 	neq(err, nil)
 end
@@ -148,7 +148,7 @@ file_io["read_lines reads lines into array"] = function()
 end
 
 file_io["read_lines returns nil for missing file"] = function()
-	local lines, err = utils.read_lines("/tmp/nonexistent_womwiki_test_file")
+	local lines, err = utils.read_lines("/tmp/nonexistent_piki_test_file")
 	eq(lines, nil)
 	neq(err, nil)
 end

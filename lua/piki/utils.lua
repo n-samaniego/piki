@@ -1,20 +1,20 @@
--- womwiki/utils.lua
+-- piki/utils.lua
 -- Utility functions shared across modules
 
-local config = require("womwiki.config")
+local config = require("piki.config")
 
 local M = {}
 
 --- Setup highlight groups for graph view and tags
 function M.setup_graph_highlights()
-	vim.api.nvim_set_hl(0, "WomwikiGraphHeader", { link = "Title", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiGraphStats", { link = "Number", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiGraphHub", { link = "String", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiGraphOrphan", { link = "Comment", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiGraphCurrent", { link = "Special", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiGraphKey", { link = "Keyword", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiGraphBorder", { link = "FloatBorder", default = true })
-	vim.api.nvim_set_hl(0, "WomwikiTag", { link = "Identifier", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphHeader", { link = "Title", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphStats", { link = "Number", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphHub", { link = "String", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphOrphan", { link = "Comment", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphCurrent", { link = "Special", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphKey", { link = "Keyword", default = true })
+	vim.api.nvim_set_hl(0, "PikiGraphBorder", { link = "FloatBorder", default = true })
+	vim.api.nvim_set_hl(0, "PikiTag", { link = "Identifier", default = true })
 end
 
 --- Detect available picker and return picker type + module
@@ -76,11 +76,11 @@ function M.ensure_md_extension(filename)
 	return filename
 end
 
---- Open a file in wiki context (sets lcd and womwiki buffer flag)
+--- Open a file in wiki context (sets lcd and piki buffer flag)
 --- @param path string Path to the wiki file
 function M.open_wiki_file(path)
 	vim.cmd("edit " .. vim.fn.fnameescape(path))
-	vim.b.womwiki = true
+	vim.b.piki = true
 	vim.cmd("lcd " .. vim.fn.fnameescape(config.wikidir))
 end
 
@@ -156,7 +156,7 @@ end
 function M.picker_grep(opts)
 	local picker_type, picker = M.get_picker()
 	if not picker_type then
-		vim.notify("womwiki: No picker available for search", vim.log.levels.ERROR)
+		vim.notify("piki: No picker available for search", vim.log.levels.ERROR)
 		return
 	end
 

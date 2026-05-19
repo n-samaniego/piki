@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 > [!note]
-> The entries below are from the original womwiki changelog
+> The entries below are from the original piki changelog
 
 ## [Unreleased]
 

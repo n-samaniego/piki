@@ -11,4 +11,4 @@ local plugin_dir = vim.fn.getcwd()
 vim.opt.rtp:append(plugin_dir)
 
 -- Minimal config to suppress warnings
-vim.g.womwiki_disable_mappings = true
+vim.g.piki_disable_mappings = true

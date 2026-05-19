@@ -1,8 +1,8 @@
--- womwiki/capture.lua
+-- piki/capture.lua
 -- Inbox and quick capture functionality
 
-local config = require("womwiki.config")
-local utils = require("womwiki.utils")
+local config = require("piki.config")
+local utils = require("piki.utils")
 
 local M = {}
 

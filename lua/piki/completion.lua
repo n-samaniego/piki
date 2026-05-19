@@ -1,4 +1,4 @@
--- Shared completion logic for womwiki
+-- Shared completion logic for piki
 -- Used by both nvim-cmp and blink.cmp adapters
 
 local M = {}
@@ -56,12 +56,12 @@ function M.get_items(line)
 		return { items = {}, is_incomplete = false, link_type = nil }
 	end
 
-	local womwiki = require("womwiki")
+	local piki = require("piki")
 	local items = {}
 
 	-- Handle tag completion
 	if link_type == "tag" then
-		local all_tags = womwiki.get_all_tags()
+		local all_tags = piki.get_all_tags()
 		for _, tag in ipairs(all_tags) do
 			if tag:lower():find(typed:lower(), 1, true) or typed == "" then
 				table.insert(items, {
@@ -72,7 +72,7 @@ function M.get_items(line)
 					filterText = "#" .. tag .. " " .. tag,
 					insertText = tag, -- Just the tag name, # already typed
 				})
-				if #items >= womwiki.config.completion.max_results then
+				if #items >= piki.config.completion.max_results then
 					break
 				end
 			end
@@ -80,12 +80,12 @@ function M.get_items(line)
 		return { items = items, is_incomplete = false, link_type = link_type }
 	end
 
-	local files = womwiki.get_wiki_files()
+	local files = piki.get_wiki_files()
 
 	-- Check if user is typing a heading reference (contains #)
 	local file_part, _ = typed:match("^(.-)#(.*)$")
 
-	if file_part and womwiki.config.completion.include_headings then
+	if file_part and piki.config.completion.include_headings then
 		-- Complete headings for the specified file
 		local target_file = nil
 
@@ -97,7 +97,7 @@ function M.get_items(line)
 		end
 
 		if target_file then
-			local headings = womwiki.get_file_headings(target_file)
+			local headings = piki.get_file_headings(target_file)
 			for _, heading in ipairs(headings) do
 				local indent = string.rep("  ", heading.level - 1)
 				table.insert(items, {
@@ -132,7 +132,7 @@ function M.get_items(line)
 				-- Add closing ]] for wikilinks
 				insertTextSuffix = link_type == "wikilink" and "]]" or nil,
 			})
-			if #items >= womwiki.config.completion.max_results then
+			if #items >= piki.config.completion.max_results then
 				break
 			end
 		end

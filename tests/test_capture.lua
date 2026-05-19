@@ -3,8 +3,8 @@ local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
 -- Setup config so capture module can load
-require("womwiki.config").setup({ path = "/tmp/test-wiki" })
-local capture = require("womwiki.capture")
+require("piki.config").setup({ path = "/tmp/test-wiki" })
+local capture = require("piki.capture")
 
 local T = new_set()
 

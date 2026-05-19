@@ -1,5 +1,5 @@
 local health = vim.health
-local config = require("womwiki.config")
+local config = require("piki.config")
 
 local M = {}
 
@@ -23,7 +23,7 @@ local function check_directories()
 
 	if not config.wikidir then
 		health.error("Wiki directory not set (has setup() been called?)", {
-			"Call require('womwiki').setup({ path = '~/your/wiki' })",
+			"Call require('piki').setup({ path = '~/your/wiki' })",
 		})
 		return
 	end

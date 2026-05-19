@@ -1,13 +1,13 @@
--- womwiki/graph.lua
+-- piki/graph.lua
 -- Link graph visualization and backlinks analysis
 
-local config = require("womwiki.config")
+local config = require("piki.config")
 local patterns = config.patterns
-local utils = require("womwiki.utils")
+local utils = require("piki.utils")
 
 local M = {}
 
---- @class womwiki.GraphCache
+--- @class piki.GraphCache
 --- @field graph table|nil The built link graph
 --- @field broken_links table|nil Broken links: { [source_key] = { target1, ... } }
 --- @field last_scan integer Timestamp of last build
@@ -234,7 +234,7 @@ end
 --- Show backlinks to current file using the available picker
 function M.backlinks()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -308,7 +308,7 @@ end
 --- Show ASCII art graph visualization in a floating window
 function M.show()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -331,12 +331,12 @@ function M.show()
 	end
 
 	local function separator()
-		add(string.rep("─", max_width), "WomwikiGraphBorder")
+		add(string.rep("─", max_width), "PikiGraphBorder")
 	end
 
 	-- Header
 	if current_file ~= "" then
-		add("Current: " .. current_file, "WomwikiGraphCurrent", 9, 9 + #current_file)
+		add("Current: " .. current_file, "PikiGraphCurrent", 9, 9 + #current_file)
 	end
 	separator()
 
@@ -389,7 +389,7 @@ function M.show()
 			.. total_broken
 			.. "  Orphans: "
 			.. #orphans,
-		"WomwikiGraphStats"
+		"PikiGraphStats"
 	)
 	separator()
 
@@ -399,7 +399,7 @@ function M.show()
 		local total_conn = #data.links_to + #data.linked_from
 		add(
 			"Current file: " .. current_file .. " (" .. total_conn .. " connections)",
-			"WomwikiGraphCurrent",
+			"PikiGraphCurrent",
 			14,
 			14 + #current_file
 		)
@@ -436,7 +436,7 @@ function M.show()
 		add("Popular files (most backlinks):")
 		for i = 1, math.min(5, #hubs) do
 			local hub = hubs[i]
-			add("  " .. hub.name .. " (" .. hub.count .. ")", "WomwikiGraphHub")
+			add("  " .. hub.name .. " (" .. hub.count .. ")", "PikiGraphHub")
 		end
 		separator()
 	end
@@ -463,7 +463,7 @@ function M.show()
 
 		for _, word in ipairs(words) do
 			if #current_line + #word + 2 > max_width then
-				add(current_line, "WomwikiGraphOrphan")
+				add(current_line, "PikiGraphOrphan")
 				current_line = "  " .. word
 			else
 				if current_line ~= "  " then
@@ -474,7 +474,7 @@ function M.show()
 			end
 		end
 		if current_line ~= "  " then
-			add(current_line, "WomwikiGraphOrphan")
+			add(current_line, "PikiGraphOrphan")
 		end
 		separator()
 	end
@@ -491,7 +491,7 @@ function M.show()
 	}
 	for _, item in ipairs(help_items) do
 		local help_line = "  " .. item[1] .. "  " .. item[2]
-		add(help_line, "WomwikiGraphKey", 2, 2 + #item[1])
+		add(help_line, "PikiGraphKey", 2, 2 + #item[1])
 	end
 
 	-- Display in floating window
@@ -499,7 +499,7 @@ function M.show()
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
 	-- Apply syntax highlighting
-	local ns_id = vim.api.nvim_create_namespace("womwiki_graph")
+	local ns_id = vim.api.nvim_create_namespace("piki_graph")
 	for _, hl in ipairs(highlights) do
 		if hl.col_start and hl.col_end then
 			vim.api.nvim_buf_add_highlight(buf, ns_id, hl.hl_group, hl.line, hl.col_start, hl.col_end)
@@ -592,7 +592,7 @@ end
 --- Show broken/dangling links via picker with option to create missing files
 function M.validate_links()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 

@@ -2,7 +2,7 @@ local MiniTest = require("mini.test")
 local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
-local calendar = require("womwiki.calendar")
+local calendar = require("piki.calendar")
 
 local T = new_set()
 

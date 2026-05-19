@@ -1,4 +1,4 @@
--- womwiki/menu.lua
+-- piki/menu.lua
 -- Generic popup menu system
 
 local M = {}
@@ -6,7 +6,7 @@ local M = {}
 -- Generic menu display function
 -- Choices format: { "Display [H]otkey", "h", function } or { "---" } for separator
 function M.show(choices, title, back_func)
-	title = title or "womwiki"
+	title = title or "piki"
 	local options = { title }
 	local hotkey_map = {} -- maps hotkey letter to choice index
 	local number_map = {} -- maps display number to choice index

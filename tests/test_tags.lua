@@ -2,9 +2,9 @@ local MiniTest = require("mini.test")
 local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
--- Setup womwiki config so tags module works
-require("womwiki.config").setup({ path = "/tmp/test-wiki" })
-local tags = require("womwiki.tags")
+-- Setup piki config so tags module works
+require("piki.config").setup({ path = "/tmp/test-wiki" })
+local tags = require("piki.tags")
 
 local fixtures = vim.fn.getcwd() .. "/tests/fixtures"
 

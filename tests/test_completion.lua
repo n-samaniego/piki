@@ -2,7 +2,7 @@ local MiniTest = require("mini.test")
 local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
-local completion = require("womwiki.completion")
+local completion = require("piki.completion")
 
 local T = new_set()
 

@@ -1,8 +1,8 @@
--- womwiki/daily.lua
+-- piki/daily.lua
 -- Daily notes functionality: open, close, cleanup, templates
 
-local config = require("womwiki.config")
-local utils = require("womwiki.utils")
+local config = require("piki.config")
+local utils = require("piki.utils")
 local patterns = config.patterns
 
 local M = {}
@@ -135,7 +135,7 @@ end
 --- Navigate to the previous daily note
 function M.prev()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -153,7 +153,7 @@ end
 --- Navigate to the next daily note
 function M.next()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -252,7 +252,7 @@ end
 
 --- Setup buffer-local keymaps for daily notes
 function M.setup_daily_buffer()
-	vim.b.womwiki = true
+	vim.b.piki = true
 	vim.cmd("lcd " .. vim.fn.fnameescape(config.wikidir))
 
 	local opts = { buffer = true, silent = true }
@@ -265,7 +265,7 @@ end
 --- @param days_offset integer|nil Number of days from today (default 0)
 function M.open(days_offset)
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -329,17 +329,17 @@ end
 
 --- Close daily note buffer
 function M.close()
-	if vim.b.womwiki then
+	if vim.b.piki then
 		vim.cmd("quit") -- Close the window and buffer
 	else
-		vim.notify("Not a womwiki buffer", vim.log.levels.WARN)
+		vim.notify("Not a piki buffer", vim.log.levels.WARN)
 	end
 end
 
 --- Edit or create the daily note template file
 function M.edit_template()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -387,7 +387,7 @@ end
 --- Delete unmodified daily notes that match the template exactly
 function M.cleanup()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 
@@ -545,7 +545,7 @@ end
 --- Modernize all daily note headers to use new wikilink nav format
 function M.modernize_headers()
 	if not config.is_valid() then
-		vim.notify("womwiki: Wiki directory not configured or not found", vim.log.levels.ERROR)
+		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
 		return
 	end
 

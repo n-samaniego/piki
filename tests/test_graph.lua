@@ -3,8 +3,8 @@ local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
 -- Setup config with wikilinks enabled
-require("womwiki.config").setup({ path = "/tmp/test-wiki" })
-local graph = require("womwiki.graph")
+require("piki.config").setup({ path = "/tmp/test-wiki" })
+local graph = require("piki.graph")
 
 local fixtures = vim.fn.getcwd() .. "/tests/fixtures"
 
@@ -206,7 +206,7 @@ end
 bg["builds graph with correct adjacency"] = function()
 	local tmpdir = setup_mini_wiki()
 	-- Point config at our temp wiki
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -238,7 +238,7 @@ end
 
 bg["identifies orphan files"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -258,7 +258,7 @@ end
 
 bg["includes daily directory in graph"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -290,7 +290,7 @@ end
 bg["handles empty wiki directory"] = function()
 	local tmpdir = vim.fn.tempname()
 	vim.fn.mkdir(tmpdir, "p")
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -312,7 +312,7 @@ end
 
 bg["only includes links to existing files"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -335,7 +335,7 @@ end
 
 bg["keys subdirectory files by relative path"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -378,7 +378,7 @@ end
 bg["includes custom daily directory in graph"] = function()
 	local tmpdir = vim.fn.tempname()
 	vim.fn.mkdir(tmpdir, "p")
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -417,7 +417,7 @@ local dn = new_set()
 T["_is_daily_note"] = dn
 
 dn["matches daily note path"] = function()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_dailydir = config.dailydir
 	config.dailydir = "/tmp/wiki/daily"
 
@@ -428,7 +428,7 @@ dn["matches daily note path"] = function()
 end
 
 dn["rejects non-daily paths"] = function()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_dailydir = config.dailydir
 	config.dailydir = "/tmp/wiki/daily"
 
@@ -439,7 +439,7 @@ dn["rejects non-daily paths"] = function()
 end
 
 dn["handles nil dailydir"] = function()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_dailydir = config.dailydir
 	config.dailydir = nil
 
@@ -449,7 +449,7 @@ dn["handles nil dailydir"] = function()
 end
 
 dn["does not match partial directory names"] = function()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_dailydir = config.dailydir
 	config.dailydir = "/tmp/wiki/daily"
 
@@ -468,7 +468,7 @@ T["_get_all_wiki_files"] = wf
 
 wf["includes subdirectory files with relative paths"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -501,7 +501,7 @@ end
 
 wf["includes daily directory files"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -538,7 +538,7 @@ end
 
 cg["returns same reference on consecutive calls"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -560,7 +560,7 @@ end
 
 cg["invalidate forces rebuild"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -594,7 +594,7 @@ T["broken_links"] = bl
 bl["returns broken links for non-existent targets"] = function()
 	local tmpdir = vim.fn.tempname()
 	vim.fn.mkdir(tmpdir, "p")
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -624,7 +624,7 @@ end
 
 bl["valid links are not in broken_links"] = function()
 	local tmpdir = setup_mini_wiki()
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -647,7 +647,7 @@ end
 bl["empty wiki has no broken links"] = function()
 	local tmpdir = vim.fn.tempname()
 	vim.fn.mkdir(tmpdir, "p")
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -669,7 +669,7 @@ end
 bl["mixed valid and broken links"] = function()
 	local tmpdir = vim.fn.tempname()
 	vim.fn.mkdir(tmpdir, "p")
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir
@@ -708,7 +708,7 @@ end
 bl["get_broken_links returns cached broken links"] = function()
 	local tmpdir = vim.fn.tempname()
 	vim.fn.mkdir(tmpdir, "p")
-	local config = require("womwiki.config")
+	local config = require("piki.config")
 	local orig_wikidir = config.wikidir
 	local orig_dailydir = config.dailydir
 	config.wikidir = tmpdir

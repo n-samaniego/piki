@@ -1,5 +1,5 @@
--- blink.cmp source for womwiki link completion
--- Thin adapter over womwiki.completion shared module
+-- blink.cmp source for piki link completion
+-- Thin adapter over piki.completion shared module
 
 --- @class blink.cmp.Source
 local source = {}
@@ -11,11 +11,11 @@ function source.new(opts)
 end
 
 function source:enabled()
-	return require("womwiki.completion").is_available()
+	return require("piki.completion").is_available()
 end
 
 function source:get_trigger_characters()
-	return require("womwiki.completion").get_trigger_characters()
+	return require("piki.completion").get_trigger_characters()
 end
 
 function source:get_completions(ctx, callback)
@@ -23,7 +23,7 @@ function source:get_completions(ctx, callback)
 	local cursor_col = ctx.cursor[2]
 	local line_before_cursor = line:sub(1, cursor_col)
 
-	local completion = require("womwiki.completion")
+	local completion = require("piki.completion")
 	local result = completion.get_items(line_before_cursor)
 
 	-- Calculate the start of the typed text for textEdit range

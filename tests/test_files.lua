@@ -2,7 +2,7 @@ local MiniTest = require("mini.test")
 local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
-local files = require("womwiki.files")
+local files = require("piki.files")
 
 local fixtures = vim.fn.getcwd() .. "/tests/fixtures"
 

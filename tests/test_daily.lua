@@ -2,8 +2,8 @@ local MiniTest = require("mini.test")
 local expect = MiniTest.expect
 local new_set = MiniTest.new_set
 
-require("womwiki.config").setup({ path = "/tmp/test-wiki" })
-local daily = require("womwiki.daily")
+require("piki.config").setup({ path = "/tmp/test-wiki" })
+local daily = require("piki.daily")
 
 local fixtures = vim.fn.getcwd() .. "/tests/fixtures"
 
