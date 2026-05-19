@@ -1,4 +1,7 @@
-# womwiki
+# piki
+
+>
+> piki is a fork of [womwiki](https://github.com/wom/womwiki)
 
 [![CI](https://github.com/wom/womwiki/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wom/womwiki/actions/workflows/ci.yml)
 
