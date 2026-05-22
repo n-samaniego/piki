@@ -1,11 +1,6 @@
 -- piki/config.lua
 -- Shared configuration and state management
 
---- @class (exact) piki.InboxConfig
---- @field file string Inbox filename relative to wiki root
---- @field format string Entry format template (supports {{ datetime }}, {{ text }})
---- @field datetime_format string strftime format for {{ datetime }}
-
 --- @class (exact) piki.CompletionConfig
 --- @field enabled boolean Enable link/tag completion
 --- @field include_headings boolean Include headings in completion results
@@ -22,14 +17,17 @@
 --- @field inline_pattern string Lua pattern for inline tags
 --- @field use_frontmatter boolean Parse YAML frontmatter for tags
 
+--- @class (exact) piki.DailyConfig
+--- @field path string? Path to daily notes directory, nil disables daily notes
+
 --- @class (exact) piki.Config
---- @field path string Path to wiki root directory
+--- @field path string? Path to wiki root directory, set by user
 --- @field picker string? Picker backend: "telescope", "mini", "fzf", "snacks", or nil to auto-detect
---- @field inbox piki.InboxConfig
 --- @field completion piki.CompletionConfig
 --- @field wikilinks piki.WikilinksConfig
 --- @field tags piki.TagsConfig
 --- @field default_link_style "markdown"|"wikilink"
+--- @field daily piki.DailyConfig
 
 local M = {}
 
@@ -45,13 +43,8 @@ M.patterns = {
 
 --- @type piki.Config
 M.config = {
-	path = os.getenv("HOME") .. "/src/wiki",
+	path = nil,
 	picker = nil,
-	inbox = {
-		file = "inbox.md",
-		format = "- [ ] {{ datetime }} - {{ text }}",
-		datetime_format = "%Y-%m-%d %H:%M",
-	},
 	completion = {
 		enabled = true,
 		include_headings = true,
@@ -68,7 +61,11 @@ M.config = {
 		inline_pattern = "#([%w_-]+)",
 		use_frontmatter = true,
 	},
-	default_link_style = "markdown",
+	default_link_style = "wikilink",
+    daily = {
+        path = nil,
+    },
+
 }
 
 --- Resolved wiki root path (set by update_paths)
@@ -80,22 +77,38 @@ M.wikidir = nil
 M.dailydir = nil
 
 function M.update_paths()
-	local symlink_path = vim.fn.expand(M.config.path)
-	local resolved = vim.uv.fs_realpath(symlink_path)
+    if not M.config.path then
+        M.wikidir = nil
+        M.dailydir = nil
+        vim.notify("piki: no wiki path configured", vim.log.levels.ERROR)
+        return
+    end
 
-	if resolved then
-		M.wikidir = resolved
-	elseif vim.uv.fs_stat(symlink_path) then
-		-- Path exists but realpath failed (e.g., broken symlink intermediate)
-		M.wikidir = symlink_path
-	else
-		M.wikidir = nil
-		M.dailydir = nil
-		vim.notify("piki: wiki directory does not exist: " .. symlink_path, vim.log.levels.ERROR)
-		return
-	end
+    local symlink_path = vim.fn.expand(M.config.path)
+    local resolved = vim.uv.fs_realpath(symlink_path)
 
-	M.dailydir = M.wikidir .. "/daily"
+    if resolved then
+        M.wikidir = resolved
+    elseif vim.uv.fs_stat(symlink_path) then
+        M.wikidir = symlink_path
+    else
+        M.wikidir = nil
+        M.dailydir = nil
+        vim.notify("piki: wiki directory does not exist: " .. symlink_path, vim.log.levels.ERROR)
+        return
+    end
+
+    if M.config.daily and M.config.daily.path then
+        local daily_expanded = vim.fn.expand(M.config.daily.path)
+        if vim.uv.fs_stat(daily_expanded) then
+            M.dailydir = daily_expanded
+        else
+            M.dailydir = nil
+            vim.notify("piki: daily directory does not exist: " .. daily_expanded, vim.log.levels.WARN)
+        end
+    else
+        M.dailydir = nil
+    end
 end
 
 --- Returns true when wikidir is set and points to an existing directory.
@@ -108,7 +121,7 @@ function M.is_valid()
 	return stat ~= nil and stat.type == "directory"
 end
 
---- @param opts piki.Config.Partial?
+--- @param opts piki.Config?
 function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
 	M.update_paths()

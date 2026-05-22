@@ -1,5 +1,6 @@
 -- Keymaps for piki
 
+-- pcall() has 2 return values, which it assigns to has_piki and piki. it says, call the function require with argument "piki", but return any errors. has_piki is a bool, piki is the return of require("piki"). if it succeeds, has_piki is true, piki contains an M table from lua/piki/init.lua. if false, piki has the error msg.
 local has_piki, piki = pcall(require, "piki")
 if not has_piki then
 	return
