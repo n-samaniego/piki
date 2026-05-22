@@ -8,13 +8,11 @@ local patterns = config.patterns
 local M = {}
 
 -- Built-in default template for daily notes
-M.DEFAULT_TEMPLATE = [=[<!-- [[« Prev]] · [[Next »]] -->
+M.DEFAULT_TEMPLATE = [=[
 # {{ date }}
-## Standup
-* Vibe:
-* ToDone:
-* ToDo:
-* Blocking:
+
+## To-Do
+
 ## Log
 ]=]
 
@@ -32,7 +30,7 @@ function M.get_template_path()
 	end
 
 	-- Check user config template
-	local config_template = os.getenv("HOME") .. "/.config/nvim/templates/daily.templ"
+	local config_template = os.getenv("HOME") .. "/Documents/Codex/00-09_Control/02_Templates/DailyNoteTemplate.md"
 	file = io.open(config_template, "r")
 	if file then
 		file:close()

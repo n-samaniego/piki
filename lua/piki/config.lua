@@ -109,6 +109,22 @@ function M.update_paths()
     else
         M.dailydir = nil
     end
+	local symlink_path = vim.fn.expand(M.config.path)
+	local resolved = vim.uv.fs_realpath(symlink_path)
+
+	if resolved then
+		M.wikidir = resolved
+	elseif vim.uv.fs_stat(symlink_path) then
+		-- Path exists but realpath failed (e.g., broken symlink intermediate)
+		M.wikidir = symlink_path
+	else
+		M.wikidir = nil
+		M.dailydir = nil
+		vim.notify("piki: wiki directory does not exist: " .. symlink_path, vim.log.levels.ERROR)
+		return
+	end
+
+	M.dailydir = M.wikidir .. "/10-19_Logs/10_Daily-Notes"
 end
 
 --- Returns true when wikidir is set and points to an existing directory.
