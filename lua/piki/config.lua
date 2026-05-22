@@ -95,7 +95,7 @@ function M.update_paths()
 		return
 	end
 
-	M.dailydir = M.wikidir .. "/daily"
+	M.dailydir = M.wikidir .. "/10-19_Logs/10_Daily-Notes"
 end
 
 --- Returns true when wikidir is set and points to an existing directory.
