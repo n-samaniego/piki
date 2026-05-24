@@ -258,6 +258,11 @@ function M.open(days_offset)
 		return
 	end
 
+    if not config.dailydir then
+        vim.notify("piki: daily directory not configured", vim.log.levels.WARN)
+        return
+    end
+
 	days_offset = days_offset or 0
 	local date = os.date("%Y-%m-%d", os.time() + days_offset * 86400) --[[@as string]]
 	local filename = config.dailydir .. "/" .. date .. ".md"
