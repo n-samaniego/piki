@@ -134,6 +134,8 @@ function M.prev()
 
 	local target_date = M.get_adjacent_daily(-1)
 	if target_date then
+        local filepath = config.dailydir .. "/" .. target_date .. ".md"
+        vim.cmd("edit " .. vim.fn.fnameescape(filepath))
 		M.setup_daily_buffer()
 	else
 		vim.notify("No previous daily note", vim.log.levels.INFO)
