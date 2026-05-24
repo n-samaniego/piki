@@ -16,6 +16,7 @@ local files = require("piki.files")
 local menu = require("piki.menu")
 local graph = require("piki.graph")
 local tags = require("piki.tags")
+local keymaps = require("piki.keymaps")
 
 --------------------------------------------------------------------------------
 -- Configuration (re-export from config module)
@@ -34,6 +35,9 @@ function M.setup(opts)
 	M.dailydir = config.dailydir
 	-- Setup highlights
 	utils.setup_graph_highlights()
+
+    -- Setup keymaps
+    keymaps.setup(M, config.config)
 
 	-- Invalidate file and tag caches when any .md file in the wiki is saved
 	local augroup = vim.api.nvim_create_augroup("PikiCacheInvalidation", { clear = true })
@@ -277,6 +281,7 @@ end
 function M.picker()
 	M.show_menu(get_main_choices(), "piki")
 end
+
 
 --------------------------------------------------------------------------------
 -- Initialize
