@@ -245,11 +245,6 @@ end
 function M.setup_daily_buffer()
 	vim.b.piki = true
 	vim.cmd("lcd " .. vim.fn.fnameescape(config.wikidir))
-
-	local opts = { buffer = true, silent = true }
-	vim.keymap.set("n", "[w", M.prev, vim.tbl_extend("force", opts, { desc = "Previous daily note" }))
-	vim.keymap.set("n", "]w", M.next, vim.tbl_extend("force", opts, { desc = "Next daily note" }))
-	-- Note: <CR> link following is handled by ftplugin/markdown.lua
 end
 
 --- Open or create a daily file with a specified offset in days

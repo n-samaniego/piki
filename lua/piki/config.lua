@@ -21,6 +21,22 @@
 --- @field path string? Path to daily notes directory, nil disables daily notes
 --- @field template_path string? Path to user's daily note template
 
+--- @class (exact) piki.WikiKeymapsConfig
+--- @field picker string|false
+--- @field backlinks string|false
+--- @field graph string|false
+---
+--- @class (exact) piki.DailyKeymapsConfig
+--- @field open string|false
+--- @field prev string|false
+--- @field next string|false
+--- @field close string|false
+--- @field calendar string|false
+
+--- @class (exact) piki.KeymapsConfig
+--- @field wiki piki.WikiKeymapsConfig
+--- @field daily piki.DailyKeymapsConfig
+
 --- @class (exact) piki.Config
 --- @field path string? Path to wiki root directory, set by user
 --- @field picker string? Picker backend: "telescope", "mini", "fzf", "snacks", or nil to auto-detect
@@ -29,6 +45,7 @@
 --- @field tags piki.TagsConfig
 --- @field default_link_style "markdown"|"wikilink"
 --- @field daily piki.DailyConfig
+--- @field keymaps piki.KeymapsConfig
 
 local M = {}
 
@@ -67,7 +84,20 @@ M.config = {
         path = nil,
         template_path = nil,
     },
-
+    keymaps = {
+        wiki = {
+            picker = "<leader>w",
+            backlinks = "<leader>wb",
+            graph = "<leader>wg",
+        },
+        daily = {
+            open = "<leader>dn",
+            prev = "<leader>dh",
+            next = "<leader>dl",
+            close = "<leader>dq",
+            calendar = "<leader>dc",
+        },
+    }
 }
 
 --- Resolved wiki root path (set by update_paths)
