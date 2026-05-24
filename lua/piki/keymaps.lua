@@ -17,6 +17,21 @@ function M.setup(piki, config)
         },
     }
 
+    local descriptions = {
+        wiki = {
+            picker = "open piki menu",
+            backlinks = "show this note's backlinks",
+            graph = "show piki graph",
+        },
+        daily = {
+            open = "open daily note",
+            prev = "open previous daily note",
+            next = "open next daily note",
+            close = "close daily note",
+            calendar = "open calendar view",
+        },
+    }
+
     local gates = {
         wiki = function() return config.path ~= nil end,
         daily = function() return config.daily.path ~= nil end,
@@ -26,8 +41,9 @@ function M.setup(piki, config)
         if not gates[namespace] or gates[namespace]() then
             for action, key in pairs(namespace_keymaps) do
                 local func = actions[namespace][action]
+                local desc = descriptions[namespace][action]
                 if key ~= false and func ~= nil then
-                    vim.keymap.set("n", key, func)
+                    vim.keymap.set("n", key, func, { desc = desc })
                 end
             end
         end
