@@ -269,9 +269,7 @@ end
 function M.tools_menu()
 	M.show_menu({
 		{ "[R]ename / Refactor", "r", M.rename_file },
-		{ "[E]dit Daily Template", "e", M.edit_daily_template },
 		{ "[C]leanup Empty Dailies", "c", M.cleanup },
-		{ "[M]odernize Headers", "m", M.modernize_daily_headers },
 	}, "Tools", M.picker)
 end
 
