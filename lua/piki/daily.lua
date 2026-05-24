@@ -8,37 +8,30 @@ local patterns = config.patterns
 local M = {}
 
 -- Built-in default template for daily notes
-M.DEFAULT_TEMPLATE = [=[<!-- [[« Prev]] · [[Next »]] -->
+M.DEFAULT_TEMPLATE = [=[
 # {{ date }}
-## Standup
-* Vibe:
-* ToDone:
-* ToDo:
-* Blocking:
+
+## To-Do
+
 ## Log
 ]=]
 
 --- Get daily template path with fallback logic
 --- Priority: 1. Wiki template, 2. Config template, 3. Built-in default
 --- @return string|nil path Path to template file or nil for built-in
---- @return string source Template source: "wiki", "config", or "builtin"
+--- @return string source Template source: "config", or "builtin"
 function M.get_template_path()
-	-- Check wiki template first
-	local wiki_template = config.wikidir .. "/.templates/daily.md"
-	local file = io.open(vim.fn.expand(wiki_template), "r")
-	if file then
-		file:close()
-		return wiki_template, "wiki"
-	end
-
+    local file
 	-- Check user config template
-	local config_template = os.getenv("HOME") .. "/.config/nvim/templates/daily.templ"
-	file = io.open(config_template, "r")
-	if file then
-		file:close()
-		return config_template, "config"
-	end
+    if config.daily.template_path then
+        file = io.open(vim.fn.expand(config.daily.template_path), "r")
 
+	    if file then
+		    file:close()
+		    return config.daily.template_path, "config"
+	    end
+
+    end
 	-- Use built-in default
 	return nil, "builtin"
 end
@@ -52,7 +45,7 @@ function M.get_template_content()
 		return M.DEFAULT_TEMPLATE
 	end
 
-	local content = utils.read_file(template_path)
+	local content = utils.read_file(template_path --[[@as string]])
 	if not content then
 		vim.notify("Failed to read template: " .. template_path, vim.log.levels.ERROR)
 		return M.DEFAULT_TEMPLATE
@@ -141,9 +134,6 @@ function M.prev()
 
 	local target_date = M.get_adjacent_daily(-1)
 	if target_date then
-		local filepath = config.dailydir .. "/" .. target_date .. ".md"
-		M.update_file_nav_line(vim.fn.expand(filepath))
-		vim.cmd("edit " .. vim.fn.fnameescape(filepath))
 		M.setup_daily_buffer()
 	else
 		vim.notify("No previous daily note", vim.log.levels.INFO)
@@ -160,7 +150,6 @@ function M.next()
 	local target_date = M.get_adjacent_daily(1)
 	if target_date then
 		local filepath = config.dailydir .. "/" .. target_date .. ".md"
-		M.update_file_nav_line(vim.fn.expand(filepath))
 		vim.cmd("edit " .. vim.fn.fnameescape(filepath))
 		M.setup_daily_buffer()
 	else
@@ -270,7 +259,7 @@ function M.open(days_offset)
 	end
 
 	days_offset = days_offset or 0
-	local date = os.date("%Y-%m-%d", os.time() + days_offset * 86400)
+	local date = os.date("%Y-%m-%d", os.time() + days_offset * 86400) --[[@as string]]
 	local filename = config.dailydir .. "/" .. date .. ".md"
 
 	-- Expand ~ and other path components for io.open() compatibility
@@ -280,8 +269,6 @@ function M.open(days_offset)
 	local file = io.open(expanded_filename, "r")
 	if file then
 		file:close()
-		-- Ensure nav line uses modern wikilink format before opening
-		M.update_file_nav_line(expanded_filename)
 	else
 		-- File doesn't exist, create it with the template content
 		local template_content = M.get_template_content()
@@ -319,10 +306,10 @@ function M.open(days_offset)
 
 	if should_split then
 		-- Split view: 20% height or minimum 10 lines
-		vim.cmd("aboveleft " .. math.max(10, math.floor(vim.o.lines * 0.2)) .. "split " .. filename)
+		vim.cmd("aboveleft " .. math.max(10, math.floor(vim.o.lines * 0.2)) .. "split " .. expanded_filename)
 	else
 		-- Full screen: we're on splash/empty buffer, open in current window
-		vim.cmd("edit " .. filename)
+		vim.cmd("edit " .. expanded_filename)
 	end
 	M.setup_daily_buffer()
 end
@@ -334,54 +321,6 @@ function M.close()
 	else
 		vim.notify("Not a piki buffer", vim.log.levels.WARN)
 	end
-end
-
---- Edit or create the daily note template file
-function M.edit_template()
-	if not config.is_valid() then
-		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
-		return
-	end
-
-	-- Always use/create wiki template
-	local wiki_template = config.wikidir .. "/.templates/daily.md"
-	local template_dir = config.wikidir .. "/.templates"
-	local expanded_path = vim.fn.expand(wiki_template)
-
-	-- Check if wiki template already exists
-	local file = io.open(expanded_path, "r")
-	if file then
-		file:close()
-		-- Template exists, just open it
-		utils.open_wiki_file(wiki_template)
-		return
-	end
-
-	-- Wiki template doesn't exist - create it
-	vim.fn.mkdir(vim.fn.expand(template_dir), "p")
-
-	-- Check if config template exists to copy from
-	local _, source = M.get_template_path()
-	local content
-
-	if source == "config" then
-		-- Copy from config template
-		content = M.get_template_content()
-		vim.notify("Migrating config template to wiki template", vim.log.levels.INFO)
-	else
-		-- Use built-in default
-		content = M.DEFAULT_TEMPLATE
-		vim.notify("Created wiki template from built-in default", vim.log.levels.INFO)
-	end
-
-	-- Write template to file
-	if not utils.write_file(expanded_path, content) then
-		vim.notify("Failed to create template file: " .. wiki_template, vim.log.levels.ERROR)
-		return
-	end
-
-	-- Open the template file
-	utils.open_wiki_file(wiki_template)
 end
 
 --- Delete unmodified daily notes that match the template exactly
@@ -476,193 +415,6 @@ function M.cleanup()
 
 		vim.api.nvim_win_close(win, true)
 		vim.notify("Deleted " .. deleted_count .. " unmodified daily note(s)", vim.log.levels.INFO)
-	end, keymap_opts)
-end
-
--- Patterns for nav line detection
-local NAV_PATTERNS = {
-	-- New wikilink format: <!-- [[« Prev]] · [[Next »]] -->
-	new = "^<!%-%- %[%[« Prev%]%] · %[%[Next »%]%] %-%->",
-	-- Old markdown link format: <!-- [« Prev](prev) | [Next »](next) -->
-	old = "^<!%-%- %[« Prev%]%(prev%) | %[Next »%]%(next%) %-%->",
-}
-
--- New nav line content
-local NEW_NAV_LINE = "<!-- [[« Prev]] · [[Next »]] -->"
-
--- Escape a date string for use in Lua patterns (hyphens are special)
-local function date_to_pattern(date)
-	return date:gsub("%-", "%%-")
-end
-
---- Update a single daily note's nav line to the modern wikilink format
---- Handles: old format (replace), missing nav with date heading (prepend),
---- new format (no-op).
---- @param filepath string Absolute path to the daily note
---- @return boolean Whether the file was modified
-function M.update_file_nav_line(filepath)
-	local file = io.open(filepath, "r")
-	if not file then
-		return false
-	end
-
-	local first_line = file:read("*l")
-	local rest = file:read("*a")
-	file:close()
-
-	if not first_line then
-		return false
-	end
-
-	-- Already modern — nothing to do
-	if first_line:match(NAV_PATTERNS.new) then
-		return false
-	end
-
-	local new_content
-	if first_line:match(NAV_PATTERNS.old) then
-		-- Old format → replace with new wikilink format
-		new_content = NEW_NAV_LINE .. "\n" .. (rest or "")
-	else
-		-- Check for missing nav line (date heading on line 1)
-		local date = filepath:match("(%d%d%d%d%-%d%d%-%d%d)%.md$")
-		if date and first_line:match("^# " .. date_to_pattern(date) .. "$") then
-			new_content = NEW_NAV_LINE .. "\n" .. first_line .. "\n" .. (rest or "")
-		else
-			return false
-		end
-	end
-
-	file = io.open(filepath, "w")
-	if not file then
-		return false
-	end
-	file:write(new_content)
-	file:close()
-	return true
-end
-
---- Modernize all daily note headers to use new wikilink nav format
-function M.modernize_headers()
-	if not config.is_valid() then
-		vim.notify("piki: Wiki directory not configured or not found", vim.log.levels.ERROR)
-		return
-	end
-
-	local files = M.list_files()
-	local to_update = {}
-	local skipped = 0
-
-	for _, filename in ipairs(files) do
-		local date = filename:match(patterns.DATE_FILENAME)
-		if date then
-			local filepath = config.dailydir .. "/" .. filename
-			local file = io.open(filepath, "r")
-			if file then
-				local first_line = file:read("*l")
-				local rest = file:read("*a")
-				file:close()
-
-				if first_line and not first_line:match(NAV_PATTERNS.new) then
-					if first_line:match(NAV_PATTERNS.old) then
-						-- Old format, needs update
-						table.insert(to_update, {
-							name = filename,
-							path = filepath,
-							action = "replace",
-							rest = rest,
-						})
-					elseif first_line:match("^# " .. date_to_pattern(date) .. "$") then
-						-- Missing nav line, date heading on line 1
-						table.insert(to_update, {
-							name = filename,
-							path = filepath,
-							action = "prepend",
-							first_line = first_line,
-							rest = rest,
-						})
-					else
-						-- Unrecognized first line format, skip
-						skipped = skipped + 1
-					end
-				end
-			end
-		end
-	end
-
-	if #to_update == 0 then
-		local msg = "All daily notes already have modern headers!"
-		if skipped > 0 then
-			msg = msg .. " (" .. skipped .. " skipped due to ambiguous format)"
-		end
-		vim.notify(msg, vim.log.levels.INFO)
-		return
-	end
-
-	-- Show preview of files to be updated
-	local preview_lines = { "Found " .. #to_update .. " daily note(s) to modernize:", "" }
-	for _, file in ipairs(to_update) do
-		local action_label = file.action == "replace" and "update" or "add nav"
-		table.insert(preview_lines, "  " .. file.name .. " (" .. action_label .. ")")
-	end
-	if skipped > 0 then
-		table.insert(preview_lines, "")
-		table.insert(preview_lines, "  (" .. skipped .. " files skipped - ambiguous format)")
-	end
-	table.insert(preview_lines, "")
-	table.insert(preview_lines, "Press 'm' to modernize, 'q' to cancel")
-
-	local buf = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(buf, 0, -1, false, preview_lines)
-	vim.bo[buf].modifiable = false
-	vim.bo[buf].buftype = "nofile"
-
-	local width = 55
-	local height = math.min(#preview_lines, 20)
-	local win = vim.api.nvim_open_win(buf, true, {
-		relative = "editor",
-		width = width,
-		height = height,
-		col = math.ceil((vim.o.columns - width) / 2),
-		row = math.ceil((vim.o.lines - height) / 2),
-		style = "minimal",
-		border = "rounded",
-	})
-
-	local keymap_opts = { buffer = buf, nowait = true, silent = true }
-
-	local function close_cancel()
-		vim.api.nvim_win_close(win, true)
-		vim.notify("Modernize cancelled", vim.log.levels.INFO)
-	end
-
-	vim.keymap.set("n", "q", close_cancel, keymap_opts)
-	vim.keymap.set("n", "<Esc>", close_cancel, keymap_opts)
-
-	vim.keymap.set("n", "m", function()
-		local updated_count = 0
-		for _, file in ipairs(to_update) do
-			local new_content
-			if file.action == "replace" then
-				-- Replace old nav line with new
-				new_content = NEW_NAV_LINE .. "\n" .. (file.rest or "")
-			else
-				-- Prepend nav line before existing content
-				new_content = NEW_NAV_LINE .. "\n" .. file.first_line .. "\n" .. (file.rest or "")
-			end
-
-			local f = io.open(file.path, "w")
-			if f then
-				f:write(new_content)
-				f:close()
-				updated_count = updated_count + 1
-			else
-				vim.notify("Failed to write: " .. file.name, vim.log.levels.WARN)
-			end
-		end
-
-		vim.api.nvim_win_close(win, true)
-		vim.notify("Modernized " .. updated_count .. " daily note(s)", vim.log.levels.INFO)
 	end, keymap_opts)
 end
 

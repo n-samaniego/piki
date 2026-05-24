@@ -4,7 +4,7 @@
 
 local M = {}
 
-M.version = "0.0.2"
+M.version = "0.0.0"
 
 -- Load all submodules
 local config = require("piki.config")
