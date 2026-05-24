@@ -18,4 +18,5 @@ if not vim.g.piki_disable_mappings then
     vim.keymap.set("n", "<leader>dn", piki.open_daily, { desc = "Open today's daily note" })
     vim.keymap.set("n", "<leader>dh", piki.daily_prev, { desc = "Previous daily note" })
     vim.keymap.set("n", "<leader>dl", piki.daily_next, { desc = "Next daily note" })
+    vim.keymap.set("n", "<leader>dq", piki.close_daily, { desc = "Close daily note" })
 end

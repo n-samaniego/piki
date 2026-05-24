@@ -58,9 +58,7 @@ end
 M.open_daily = daily.open
 M.close_daily = daily.close
 M.list_files = daily.list_files
-M.edit_daily_template = daily.edit_template
 M.cleanup = daily.cleanup
-M.modernize_daily_headers = daily.modernize_headers
 M.daily_prev = daily.prev
 M.daily_next = daily.next
 
