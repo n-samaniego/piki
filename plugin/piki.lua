@@ -15,4 +15,7 @@ if not vim.g.piki_disable_mappings then
 	vim.keymap.set("n", "<leader>wq", piki.capture_with_location, { desc = "piki quick capture" })
 	vim.keymap.set("v", "<leader>wq", piki.capture_visual, { desc = "piki capture selection" })
 	vim.keymap.set("n", "<leader>wi", piki.inbox, { desc = "piki inbox" })
+    vim.keymap.set("n", "<leader>dn", piki.open_daily, { desc = "Open today's daily note" })
+    vim.keymap.set("n", "<leader>dh", piki.daily_prev, { desc = "Previous daily note" })
+    vim.keymap.set("n", "<leader>dl", piki.daily_next, { desc = "Next daily note" })
 end

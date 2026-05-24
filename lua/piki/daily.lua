@@ -134,9 +134,6 @@ function M.prev()
 
 	local target_date = M.get_adjacent_daily(-1)
 	if target_date then
-		local filepath = config.dailydir .. "/" .. target_date .. ".md"
-		M.update_file_nav_line(vim.fn.expand(filepath))
-		vim.cmd("edit " .. vim.fn.fnameescape(filepath))
 		M.setup_daily_buffer()
 	else
 		vim.notify("No previous daily note", vim.log.levels.INFO)
@@ -153,7 +150,6 @@ function M.next()
 	local target_date = M.get_adjacent_daily(1)
 	if target_date then
 		local filepath = config.dailydir .. "/" .. target_date .. ".md"
-		M.update_file_nav_line(vim.fn.expand(filepath))
 		vim.cmd("edit " .. vim.fn.fnameescape(filepath))
 		M.setup_daily_buffer()
 	else
@@ -273,8 +269,6 @@ function M.open(days_offset)
 	local file = io.open(expanded_filename, "r")
 	if file then
 		file:close()
-		-- Ensure nav line uses modern wikilink format before opening
-		M.update_file_nav_line(expanded_filename)
 	else
 		-- File doesn't exist, create it with the template content
 		local template_content = M.get_template_content()
@@ -312,10 +306,10 @@ function M.open(days_offset)
 
 	if should_split then
 		-- Split view: 20% height or minimum 10 lines
-		vim.cmd("aboveleft " .. math.max(10, math.floor(vim.o.lines * 0.2)) .. "split " .. filename)
+		vim.cmd("aboveleft " .. math.max(10, math.floor(vim.o.lines * 0.2)) .. "split " .. expanded_filename)
 	else
 		-- Full screen: we're on splash/empty buffer, open in current window
-		vim.cmd("edit " .. filename)
+		vim.cmd("edit " .. expanded_filename)
 	end
 	M.setup_daily_buffer()
 end
