@@ -41,6 +41,9 @@ function M.setup(opts)
     -- Setup keymaps
     keymaps.setup(M, M.config, M.dailydir)
 
+    -- Initialize menu
+    menu.setup(M, M.dailydir)
+
 	-- Invalidate file and tag caches when any .md file in the wiki is saved
 	local augroup = vim.api.nvim_create_augroup("PikiCacheInvalidation", { clear = true })
 	vim.api.nvim_create_autocmd("BufWritePost", {
