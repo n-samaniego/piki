@@ -152,28 +152,32 @@ function M.setup(piki, dailydir)
     end
 
 
+    local analyze_menu
+    local tags_menu
+    local tools_menu
+
     -- Analysis submenu
-    local function analyze_menu()
-        piki.show_menu({
+    analyze_menu = function()
+        M.show_menu({
             { "[B]acklinks", "b", piki.backlinks },
             { "[G]raph View", "g", piki.show_graph },
             { "[V]alidate Links", "v", piki.validate_links },
-            { "[T]ags", "t", piki.tags_menu },
+            { "[T]ags", "t", tags_menu },
         }, "Analyze", piki.picker)
     end
 
     -- Tags submenu
-    local function tags_menu()
-        piki.show_menu({
+    tags_menu = function()
+        M.show_menu({
             { "[L]ist All Tags", "l", piki.list_tags },
             { "[F]ilter by Tag", "f", piki.filter_by_tag },
             { "[A]dd Tag to File", "a", piki.add_tag },
-        }, "Tags", piki.analyze_menu)
+        }, "Tags", analyze_menu)
     end
 
     -- Tools submenu
-    local function tools_menu()
-        piki.show_menu({
+    tools_menu = function()
+        M.show_menu({
             { "[R]ename / Refactor", "r", piki.rename_file },
             { "[C]leanup Empty Dailies", "c", piki.cleanup },
         }, "Tools", piki.picker)
@@ -196,8 +200,8 @@ function M.setup(piki, dailydir)
         table.insert(choices, { "[C]alendar", "c", piki.calendar })
         table.insert(choices, { "Cr[e]ate", "e", piki.create_file })
         table.insert(choices, { "---" })
-        table.insert(choices, { "[A]nalyze >", "a", piki.analyze_menu })
-        table.insert(choices, { "Too[l]s >", "l", piki.tools_menu })
+        table.insert(choices, { "[A]nalyze >", "a", analyze_menu })
+        table.insert(choices, { "Too[l]s >", "l", tools_menu })
 
         return choices
     end
