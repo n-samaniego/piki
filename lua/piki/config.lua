@@ -71,19 +71,19 @@ M.config = {
 	path = nil,
 	picker = nil,
 	completion = {
-		enabled = true,
+		enabled = false,
 		include_headings = true,
 		max_results = 50,
 		cache_ttl = 300,
 	},
     markdown_help = false,
 	wikilinks = {
-		enabled = true,
+		enabled = false,
 		spaces_to = "-",
 		confirm_create = true,
 	},
 	tags = {
-		enabled = true,
+		enabled = false,
 		inline_pattern = "#([%w_-]+)",
 		use_frontmatter = true,
 	},

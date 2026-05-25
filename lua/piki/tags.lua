@@ -236,10 +236,10 @@ function M.read_file_metadata(filepath)
 		return result
 	end
 
-	local inline_pattern = (config.config.tags and config.config.tags.inline_pattern) or patterns.TAG_INLINE
-	local use_frontmatter = not config.config.tags or config.config.tags.use_frontmatter ~= false
-	local tags_enabled = not config.config.tags or config.config.tags.enabled ~= false
-	local in_code_block = false
+    local inline_pattern = (config.config.tags and config.config.tags.inline_pattern) or patterns.TAG_INLINE
+    local use_frontmatter = config.config.tags and config.config.tags.use_frontmatter == true
+    local tags_enabled = config.config.tags and config.config.tags.enabled == true
+    local in_code_block = false
 
 	local start_idx
 	-- Parse frontmatter if present
