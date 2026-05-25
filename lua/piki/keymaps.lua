@@ -92,6 +92,8 @@ function M.setup(piki, config)
 
             end
 
+            print(vim.fn.expand("%:p"))
+
             -- set daily note specific keymaps
             if gates.daily() and vim.fn.expand("%:p"):find(config.daily.path, 1, true) then
                 -- loop over actions.daily
