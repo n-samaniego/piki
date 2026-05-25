@@ -25,7 +25,8 @@
 --- @field picker string|false
 --- @field backlinks string|false
 --- @field graph string|false
----
+--- @field follow string|false
+
 --- @class (exact) piki.DailyKeymapsConfig
 --- @field open string|false
 --- @field prev string|false
@@ -33,14 +34,20 @@
 --- @field close string|false
 --- @field calendar string|false
 
+--- @class (exact) piki.MarkdownKeymapsConfig
+--- @field wordlink string|false
+--- @field togglecheck string|false
+
 --- @class (exact) piki.KeymapsConfig
 --- @field wiki piki.WikiKeymapsConfig
 --- @field daily piki.DailyKeymapsConfig
+--- @field markdown piki.MarkdownKeymapsConfig
 
 --- @class (exact) piki.Config
 --- @field path string? Path to wiki root directory, set by user
 --- @field picker string? Picker backend: "telescope", "mini", "fzf", "snacks", or nil to auto-detect
 --- @field completion piki.CompletionConfig
+--- @field markdown_help boolean
 --- @field wikilinks piki.WikilinksConfig
 --- @field tags piki.TagsConfig
 --- @field default_link_style "markdown"|"wikilink"
@@ -69,6 +76,7 @@ M.config = {
 		max_results = 50,
 		cache_ttl = 300,
 	},
+    markdown_help = false,
 	wikilinks = {
 		enabled = true,
 		spaces_to = "-",
@@ -89,6 +97,7 @@ M.config = {
             picker = "<leader>w",
             backlinks = "<leader>wb",
             graph = "<leader>wg",
+            follow = "gf"
         },
         daily = {
             open = "<leader>dn",
@@ -96,6 +105,10 @@ M.config = {
             next = "<leader>dl",
             close = "<leader>dq",
             calendar = "<leader>dc",
+        },
+        markdown = {
+            wordlink = "<leader>wl",
+            togglecheck = "<CR>"
         },
     }
 }

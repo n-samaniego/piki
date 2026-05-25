@@ -7,6 +7,7 @@ function M.setup(piki, config)
             picker = piki.picker,
             backlinks = piki.backlinks,
             graph = piki.show_graph,
+            follow = piki.follow
         },
         daily = {
             open = piki.open_daily,
@@ -15,26 +16,36 @@ function M.setup(piki, config)
             close = piki.close_daily,
             calendar = piki.calendar,
         },
+        markdown = {
+            wordlink = piki.word_link,
+            togglecheck = piki.toggle_check,
+        },
     }
 
     local descriptions = {
         wiki = {
-            picker = "open piki menu",
-            backlinks = "show this note's backlinks",
-            graph = "show piki graph",
+            picker = "Open piki menu",
+            backlinks = "Show this note's backlinks",
+            graph = "Show piki graph",
+            follow = "Follow markdown link",
         },
         daily = {
-            open = "open daily note",
-            prev = "open previous daily note",
-            next = "open next daily note",
-            close = "close daily note",
-            calendar = "open calendar view",
+            open = "Open daily note",
+            prev = "Open previous daily note",
+            next = "Open next daily note",
+            close = "Close daily note",
+            calendar = "Open calendar view",
+        },
+        markdown = {
+            wordlink = "Convert hovered word to a link",
+            togglecheck = "Toggle Markdown checkbox"
         },
     }
 
     local gates = {
         wiki = function() return config.path ~= nil end,
         daily = function() return config.daily.path ~= nil end,
+        markdown = function() return config.markdown_help ~= false end,
     }
 
     for namespace, namespace_keymaps in pairs(config.keymaps) do
@@ -48,6 +59,42 @@ function M.setup(piki, config)
             end
         end
     end
+
 end
 
 return M
+
+
+
+
+vim.keymap.set("n", "<leader>ml", word_to_link, {
+	buffer = true,
+	desc = "Convert word to link / cycle link format",
+	silent = true,
+})
+
+vim.keymap.set({ "n", "v" }, "<leader>mc", toggle_markdown_checkbox, {
+	buffer = true,
+	desc = "Toggle markdown checkbox",
+	silent = true,
+})
+
+vim.keymap.set({ "n", "v" }, "<Space><Space>", toggle_markdown_checkbox, {
+	buffer = true,
+	desc = "Toggle markdown checkbox",
+	silent = true,
+})
+
+vim.keymap.set("n", "gf", follow_markdown_link, {
+	buffer = true,
+	desc = "Follow markdown link",
+	silent = true,
+})
+
+vim.keymap.set("n", "<CR>", follow_markdown_link, {
+	buffer = true,
+	desc = "Follow markdown link",
+	silent = true,
+})
+
+

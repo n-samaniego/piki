@@ -17,6 +17,8 @@ local menu = require("piki.menu")
 local graph = require("piki.graph")
 local tags = require("piki.tags")
 local keymaps = require("piki.keymaps")
+local markdown = require("piki.markdown")
+
 
 --------------------------------------------------------------------------------
 -- Configuration (re-export from config module)
@@ -39,6 +41,8 @@ function M.setup(opts)
     -- Setup keymaps
     keymaps.setup(M, config.config)
 
+    -- Setup markdown commands
+    markdown.setup()
 	-- Invalidate file and tag caches when any .md file in the wiki is saved
 	local augroup = vim.api.nvim_create_augroup("PikiCacheInvalidation", { clear = true })
 	vim.api.nvim_create_autocmd("BufWritePost", {
@@ -282,6 +286,13 @@ function M.picker()
 	M.show_menu(get_main_choices(), "piki")
 end
 
+
+--------------------------------------------------------------------------------
+-- Markdown (re-export from config module)
+--------------------------------------------------------------------------------
+M.follow = markdown.follow_markdown_link
+M.word_link = markdown.word_to_link
+M.toggle_check = markdown.toggle_markdown_checkbox
 
 --------------------------------------------------------------------------------
 -- Initialize

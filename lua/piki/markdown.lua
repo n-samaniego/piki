@@ -1,10 +1,7 @@
----@type vim
+local M = {}
+
 local vim = vim
 local patterns = require("piki.config").patterns
-
-vim.opt_local.tabstop = 2
-vim.opt_local.shiftwidth = 2
-vim.opt_local.softtabstop = 2
 
 -- Helper: Ensure filename has .md extension
 local function ensure_md_extension(filename)
@@ -67,7 +64,7 @@ local function find_fuzzy_matches(target_name, wiki_root)
 end
 
 -- Convert word under cursor to link (markdown or wikilink based on config)
-local function word_to_link()
+function M.word_to_link()
 	local line = vim.api.nvim_get_current_line()
 	local col = vim.api.nvim_win_get_cursor(0)[2]
 	local row = vim.api.nvim_win_get_cursor(0)[1]
@@ -156,7 +153,7 @@ end
 -- Toggle markdown checkbox on line(s)
 -- Cycle: plain list → [ ] → [-] → [x] → [ ]
 -- Non-list lines and [>] forwarded items are no-ops
-local function toggle_markdown_checkbox()
+function M.toggle_markdown_checkbox()
 	local start_line = vim.fn.line(".")
 	local end_line = vim.fn.line(".")
 
@@ -216,7 +213,7 @@ local function toggle_markdown_checkbox()
 end
 
 -- Follow markdown link under cursor
-local function follow_markdown_link()
+function M.follow_markdown_link()
 	local line = vim.api.nvim_get_current_line()
 	local col = vim.api.nvim_win_get_cursor(0)[2]
 	local piki = require("piki")
@@ -448,58 +445,51 @@ local function follow_markdown_link()
 	vim.notify("No markdown link under cursor", vim.log.levels.WARN)
 end
 
-vim.keymap.set("n", "<leader>ml", word_to_link, {
-	buffer = true,
-	desc = "Convert word to link / cycle link format",
-	silent = true,
-})
+function M.setup()
+    local group = vim.api.nvim_create_augroup("PikiMarkdown", { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = "markdown",
+        group = group,
+        callback = function()
+            -- guard so setup doesn't run twice
+            if vim.b.piki_markdown_init then return end
+            vim.b.piki_markdown_init = true
 
-vim.keymap.set({ "n", "v" }, "<leader>mc", toggle_markdown_checkbox, {
-	buffer = true,
-	desc = "Toggle markdown checkbox",
-	silent = true,
-})
+            local piki = require("piki")
 
-vim.keymap.set({ "n", "v" }, "<Space><Space>", toggle_markdown_checkbox, {
-	buffer = true,
-	desc = "Toggle markdown checkbox",
-	silent = true,
-})
+            -- Setup link autocompletion
+            if piki.config.completion.enabled then
+            	piki.setup_completion()
+            end
 
-vim.keymap.set("n", "gf", follow_markdown_link, {
-	buffer = true,
-	desc = "Follow markdown link",
-	silent = true,
-})
+            -- Setup tag highlighting
+            if piki.config.tags and piki.config.tags.enabled then
+            	-- Highlight inline #tags (but not in code blocks or URLs)
+            	vim.fn.matchadd("PikiTag", "\\v(^|\\s)#[a-zA-Z0-9_-]+")
+            end
 
-vim.keymap.set("n", "<CR>", follow_markdown_link, {
-	buffer = true,
-	desc = "Follow markdown link",
-	silent = true,
-})
+            -- Setup Markdown-specific keymaps
+            local opts = { buffer = true, silent = true }
+            if piki.config.markdown_help then
+                local km = piki.config.keymaps.markdown
+                if km.wordlink ~= false then
+                    vim.keymap.set("n", km.wordlink, piki.word_link, opts)
+                end
+                if km.togglecheck ~= false then
+                    vim.keymap.set({ "n", "v" }, km.togglecheck, piki.toggle_check, opts)
+                end
+            end
 
--- Setup link autocompletion
-local has_piki, piki = pcall(require, "piki")
-if has_piki then
-	piki.setup_completion()
+            if piki.config.path ~= nil then
+                local wkm = piki.config.keymaps.wiki
+                if wkm.follow ~= false then
+                    vim.keymap.set("n", wkm.follow, piki.follow, opts)
+                end
+            end
+        end,
+    })
 end
 
--- Setup tag highlighting
-if has_piki and piki.config.tags and piki.config.tags.enabled then
-	-- Highlight inline #tags (but not in code blocks or URLs)
-	vim.fn.matchadd("PikiTag", "\\v(^|\\s)#[a-zA-Z0-9_-]+")
-end
 
--- Auto-configure table.vim for wiki buffers
-if vim.b.piki then
-	local has_table_vim = pcall(require, "table_vim")
-	if has_table_vim then
-		vim.fn["table#SetBufferConfig"]({
-			style = "markdown",
-			options = {
-				default_alignment = "center",
-				multiline = "auto",
-			},
-		})
-	end
-end
+
+return M
