@@ -23,12 +23,12 @@ M.DEFAULT_TEMPLATE = [=[
 function M.get_template_path()
     local file
 	-- Check user config template
-    if config.daily.template_path then
-        file = io.open(vim.fn.expand(config.daily.template_path), "r")
+    if config.config.daily.template_path then
+        file = io.open(vim.fn.expand(config.config.daily.template_path), "r")
 
 	    if file then
 		    file:close()
-		    return config.daily.template_path, "config"
+		    return config.config.daily.template_path, "config"
 	    end
 
     end
