@@ -3,98 +3,109 @@ local M = {}
 
 function M.setup(piki, config)
     local actions = {
-        wiki = {
+        global = {
             picker = piki.picker,
             backlinks = piki.backlinks,
             graph = piki.show_graph,
-            follow = piki.follow
-        },
-        daily = {
-            open = piki.open_daily,
-            prev = piki.daily_prev,
-            next = piki.daily_next,
-            close = piki.close_daily,
             calendar = piki.calendar,
+            open = piki.open_daily,
         },
         markdown = {
             wordlink = piki.word_link,
             togglecheck = piki.toggle_check,
+            follow = piki.follow
         },
+        daily = {
+            prev = piki.daily_prev,
+            next = piki.daily_next,
+            close = piki.close_daily,
+        }
     }
 
     local descriptions = {
-        wiki = {
+        global = {
             picker = "Open piki menu",
             backlinks = "Show this note's backlinks",
             graph = "Show piki graph",
-            follow = "Follow markdown link",
+            calendar = "Open calendar view",
+            open = "Open daily note",
+        },
+        markdown = {
+            wordlink = "Convert word to link / cycle link format",
+            togglecheck = "Toggle markdown checkbox",
+            follow = "Follow piki link",
         },
         daily = {
-            open = "Open daily note",
             prev = "Open previous daily note",
             next = "Open next daily note",
             close = "Close daily note",
-            calendar = "Open calendar view",
-        },
-        markdown = {
-            wordlink = "Convert hovered word to a link",
-            togglecheck = "Toggle Markdown checkbox"
         },
     }
 
     local gates = {
-        wiki = function() return config.path ~= nil end,
-        daily = function() return config.daily.path ~= nil end,
+        global = function() return config.path ~= nil end,
         markdown = function() return config.markdown_help ~= false end,
+        daily = function() return config.daily.path ~= nil end,
     }
 
-    for namespace, namespace_keymaps in pairs(config.keymaps) do
-        if not gates[namespace] or gates[namespace]() then
-            for action, key in pairs(namespace_keymaps) do
-                local func = actions[namespace][action]
-                local desc = descriptions[namespace][action]
-                if key ~= false and func ~= nil then
-                    vim.keymap.set("n", key, func, { desc = desc })
-                end
+    if gates.global() then
+        -- loop
+        for action, key in pairs(config.keymaps.global) do
+            local func = actions.global[action]
+            local desc = descriptions.global[action]
+            if key ~= false and func ~= nil then
+                vim.keymap.set("n", key, func, { desc = desc })
             end
         end
     end
 
+    local group = vim.api.nvim_create_augroup("PikiMarkdown", { clear = true })
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = "markdown",
+        group = group,
+        callback = function()
+            -- guard so setup doesn't run twice
+            if vim.b.piki_markdown_init then return end
+            vim.b.piki_markdown_init = true
+
+            -- Setup link autocompletion
+            if config.completion.enabled then
+            	piki.setup_completion()
+            end
+
+            -- Setup tag highlighting
+            if config.tags and config.tags.enabled then
+            	-- Highlight inline #tags (but not in code blocks or URLs)
+            	vim.fn.matchadd("PikiTag", "\\v(^|\\s)#[a-zA-Z0-9_-]+")
+            end
+
+            -- Setup Markdown-specific keymaps
+            local opts = { buffer = true, silent = true }
+            if gates.markdown() then
+                for action, key in pairs(config.keymaps.markdown) do
+                    local func = actions.markdown[action]
+                    local desc = descriptions.markdown[action]
+                    if key ~= false and func ~= nil then
+                        vim.keymap.set("n", key, func, vim.tbl_extend("force", opts, { desc = desc }))
+                    end
+                end
+
+            end
+
+            -- set daily note specific keymaps
+            if gates.daily() and vim.fn.expand("%:p"):find(config.daily.path, 1, true) then
+                -- loop over actions.daily
+                for action, key in pairs(config.keymaps.daily) do
+                    local func = actions.daily[action]
+                    local desc = descriptions.daily[action]
+                    if key ~= false and func ~= nil then
+                        vim.keymap.set("n", key, func, vim.tbl_extend("force", opts, { desc = desc }))
+                    end
+                end
+            end
+        end,
+    })
 end
 
+
 return M
-
-
-
-
-vim.keymap.set("n", "<leader>ml", word_to_link, {
-	buffer = true,
-	desc = "Convert word to link / cycle link format",
-	silent = true,
-})
-
-vim.keymap.set({ "n", "v" }, "<leader>mc", toggle_markdown_checkbox, {
-	buffer = true,
-	desc = "Toggle markdown checkbox",
-	silent = true,
-})
-
-vim.keymap.set({ "n", "v" }, "<Space><Space>", toggle_markdown_checkbox, {
-	buffer = true,
-	desc = "Toggle markdown checkbox",
-	silent = true,
-})
-
-vim.keymap.set("n", "gf", follow_markdown_link, {
-	buffer = true,
-	desc = "Follow markdown link",
-	silent = true,
-})
-
-vim.keymap.set("n", "<CR>", follow_markdown_link, {
-	buffer = true,
-	desc = "Follow markdown link",
-	silent = true,
-})
-
-

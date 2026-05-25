@@ -445,50 +445,6 @@ function M.follow_markdown_link()
 	vim.notify("No markdown link under cursor", vim.log.levels.WARN)
 end
 
-function M.setup()
-    local group = vim.api.nvim_create_augroup("PikiMarkdown", { clear = true })
-    vim.api.nvim_create_autocmd("FileType", {
-        pattern = "markdown",
-        group = group,
-        callback = function()
-            -- guard so setup doesn't run twice
-            if vim.b.piki_markdown_init then return end
-            vim.b.piki_markdown_init = true
-
-            local piki = require("piki")
-
-            -- Setup link autocompletion
-            if piki.config.completion.enabled then
-            	piki.setup_completion()
-            end
-
-            -- Setup tag highlighting
-            if piki.config.tags and piki.config.tags.enabled then
-            	-- Highlight inline #tags (but not in code blocks or URLs)
-            	vim.fn.matchadd("PikiTag", "\\v(^|\\s)#[a-zA-Z0-9_-]+")
-            end
-
-            -- Setup Markdown-specific keymaps
-            local opts = { buffer = true, silent = true }
-            if piki.config.markdown_help then
-                local km = piki.config.keymaps.markdown
-                if km.wordlink ~= false then
-                    vim.keymap.set("n", km.wordlink, piki.word_link, opts)
-                end
-                if km.togglecheck ~= false then
-                    vim.keymap.set({ "n", "v" }, km.togglecheck, piki.toggle_check, opts)
-                end
-            end
-
-            if piki.config.path ~= nil then
-                local wkm = piki.config.keymaps.wiki
-                if wkm.follow ~= false then
-                    vim.keymap.set("n", wkm.follow, piki.follow, opts)
-                end
-            end
-        end,
-    })
-end
 
 
 

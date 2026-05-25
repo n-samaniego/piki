@@ -321,7 +321,7 @@ function M.close()
 	if vim.b.piki then
 		vim.cmd("quit") -- Close the window and buffer
 	else
-		vim.notify("Not a piki buffer", vim.log.levels.WARN)
+		vim.notify("Not a daily note buffer", vim.log.levels.WARN)
 	end
 end
 

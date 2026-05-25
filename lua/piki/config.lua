@@ -21,27 +21,27 @@
 --- @field path string? Path to daily notes directory, nil disables daily notes
 --- @field template_path string? Path to user's daily note template
 
---- @class (exact) piki.WikiKeymapsConfig
+--- @class (exact) piki.GlobalKeymapsConfig
 --- @field picker string|false
 --- @field backlinks string|false
 --- @field graph string|false
---- @field follow string|false
-
---- @class (exact) piki.DailyKeymapsConfig
---- @field open string|false
---- @field prev string|false
---- @field next string|false
---- @field close string|false
 --- @field calendar string|false
+--- @field open string|false
 
 --- @class (exact) piki.MarkdownKeymapsConfig
 --- @field wordlink string|false
 --- @field togglecheck string|false
+--- @field follow string|false
+
+--- @class (exact) piki.DailyKeymapsConfig
+--- @field prev string|false
+--- @field next string|false
+--- @field close string|false
 
 --- @class (exact) piki.KeymapsConfig
---- @field wiki piki.WikiKeymapsConfig
---- @field daily piki.DailyKeymapsConfig
+--- @field global piki.GlobalKeymapsConfig
 --- @field markdown piki.MarkdownKeymapsConfig
+--- @field daily piki.DailyKeymapsConfig
 
 --- @class (exact) piki.Config
 --- @field path string? Path to wiki root directory, set by user
@@ -93,22 +93,22 @@ M.config = {
         template_path = nil,
     },
     keymaps = {
-        wiki = {
+        global = {
             picker = "<leader>w",
             backlinks = "<leader>wb",
             graph = "<leader>wg",
-            follow = "gf"
-        },
-        daily = {
-            open = "<leader>dn",
-            prev = "<leader>dh",
-            next = "<leader>dl",
-            close = "<leader>dq",
             calendar = "<leader>dc",
+            open = "<leader>dn",
         },
         markdown = {
             wordlink = "<leader>wl",
-            togglecheck = "<CR>"
+            togglecheck = "<CR>",
+            follow = "gf",
+        },
+        daily = {
+            prev = "<leader>dh",
+            next = "<leader>dl",
+            close = "<leader>dq",
         },
     }
 }
