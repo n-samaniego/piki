@@ -1,7 +1,7 @@
 -- keymaps.lua
 local M = {}
 
-function M.setup(piki, config)
+function M.setup(piki, config, dailydir)
     local actions = {
         global = {
             picker = piki.picker,
@@ -45,7 +45,7 @@ function M.setup(piki, config)
     local gates = {
         global = function() return config.path ~= nil end,
         markdown = function() return config.markdown_help ~= false end,
-        daily = function() return config.daily.path ~= nil end,
+        daily = function() return dailydir ~= nil end,
     }
 
     if gates.global() then
@@ -92,11 +92,8 @@ function M.setup(piki, config)
 
             end
 
-            print(vim.fn.expand("%:p"))
-            print(vim.fn.expand("%:p"))
-            print(config.daily.path)
             -- set daily note specific keymaps
-            if gates.daily() and vim.fn.expand("%:p"):find(config.daily.path, 1, true) then
+            if gates.daily() and vim.fn.expand("%:p"):find(dailydir, 1, true) then
                 -- loop over actions.daily
                 for action, key in pairs(config.keymaps.daily) do
                     local func = actions.daily[action]

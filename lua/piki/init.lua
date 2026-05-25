@@ -39,7 +39,7 @@ function M.setup(opts)
 	utils.setup_graph_highlights()
 
     -- Setup keymaps
-    keymaps.setup(M, config.config)
+    keymaps.setup(M, M.config, M.dailydir)
 
 	-- Invalidate file and tag caches when any .md file in the wiki is saved
 	local augroup = vim.api.nvim_create_augroup("PikiCacheInvalidation", { clear = true })
