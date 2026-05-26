@@ -156,7 +156,7 @@ function M.setup(piki, dailydir)
 
     -- Analysis submenu
     analyze_menu = function()
-        M.show_menu({
+        M.show({
             { "[B]acklinks", "b", piki.backlinks },
             { "[G]raph View", "g", piki.show_graph },
             { "[V]alidate Links", "v", piki.validate_links },
@@ -166,7 +166,7 @@ function M.setup(piki, dailydir)
 
     -- Tags submenu
     tags_menu = function()
-        M.show_menu({
+        M.show({
             { "[L]ist All Tags", "l", piki.list_tags },
             { "[F]ilter by Tag", "f", piki.filter_by_tag },
             { "[A]dd Tag to File", "a", piki.add_tag },
@@ -175,7 +175,7 @@ function M.setup(piki, dailydir)
 
     -- Tools submenu
     tools_menu = function()
-        M.show_menu({
+        M.show({
             { "[R]ename / Refactor", "r", piki.rename_file },
             { "[C]leanup Empty Dailies", "c", piki.cleanup },
         }, "Tools", piki.picker)
