@@ -326,7 +326,7 @@ function M.close()
                 vim.cmd("quit")
             end
             if choice == 2 then
-                vim.cmd("quit") -- Close the window and buffer
+                vim.cmd("quit!") -- Close the window and buffer
             end
             if choice == 3 then
                 return
