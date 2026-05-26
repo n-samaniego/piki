@@ -319,9 +319,21 @@ end
 --- Close daily note buffer
 function M.close()
 	if vim.b.piki then
-		vim.cmd("quit") -- Close the window and buffer
-	else
-		vim.notify("Not a daily note buffer", vim.log.levels.WARN)
+        if vim.bo.modified then
+            local choice = vim.fn.confirm("Save daily note?", "&Yes\n&No\n&Cancel", 1)
+            if choice == 1 then
+                vim.cmd("write")
+                vim.cmd("quit")
+            end
+            if choice == 2 then
+                vim.cmd("quit") -- Close the window and buffer
+            end
+            if choice == 3 then
+                return
+            end
+        else
+            vim.cmd("quit")
+        end
 	end
 end
 
