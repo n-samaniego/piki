@@ -62,7 +62,7 @@ M.patterns = {
 	TAG_START = "^#([%w_-]+)",
 	WIKILINK = "%[%[([^%]]+)%]%]",
 	URL_HTTP = "^https?://",
-	DATE_FILENAME = "^(%d%d%d%d%-%d%d%-%d%d)%.md$",
+	DATE_FILENAME = "^(%d+%-%d+%-%d+)%.md$",
 	HEADING_H1 = "^#%s+(.+)$",
 }
 
