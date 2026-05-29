@@ -1,6 +1,6 @@
 # piki
 
-![piki picture](piki.png)
+![piki picture](pikifix.png)
 
 
 `piki` is an opinionated Neovim wiki plugin. It contains a ***picky*** selection of features from [womwiki](https://github.com/wom/womwiki) and Obsidian, built around my own day-to-day and how my brain works.
