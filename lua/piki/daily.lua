@@ -22,18 +22,21 @@ M.DEFAULT_TEMPLATE = [=[
 --- @return string source Template source: "config", or "builtin"
 function M.get_template_path()
     local file
-	-- Check user config template
     if config.config.daily.template_path then
-        file = io.open(vim.fn.expand(config.config.daily.template_path), "r")
-
-	    if file then
-		    file:close()
-		    return config.config.daily.template_path, "config"
-	    end
-
+        local expanded = vim.fn.expand(config.config.daily.template_path)
+        vim.notify("piki debug: trying template path: " .. expanded, vim.log.levels.DEBUG)
+        file = io.open(expanded, "r")
+        if file then
+            file:close()
+            vim.notify("piki debug: template found, using config", vim.log.levels.DEBUG)
+            return config.config.daily.template_path, "config"
+        else
+            vim.notify("piki debug: template NOT found at: " .. expanded, vim.log.levels.WARN)
+        end
+    else
+        vim.notify("piki debug: no template_path in config", vim.log.levels.WARN)
     end
-	-- Use built-in default
-	return nil, "builtin"
+    return nil, "builtin"
 end
 
 --- Get daily template content, falling back to built-in default
@@ -45,7 +48,7 @@ function M.get_template_content()
 		return M.DEFAULT_TEMPLATE
 	end
 
-	local content = utils.read_file(template_path --[[@as string]])
+	local content = utils.read_file(vim.fn.expand(template_path --[[@as string]]))
 	if not content then
 		vim.notify("Failed to read template: " .. template_path, vim.log.levels.ERROR)
 		return M.DEFAULT_TEMPLATE
@@ -322,7 +325,7 @@ function M.close()
         if vim.bo.modified then
             local choice = vim.fn.confirm("Save daily note?", "&Yes\n&No\n&Cancel", 1)
             if choice == 1 then
-                vim.cmd("write")
+                vim.cmd("silent! write")
                 vim.cmd("quit")
             end
             if choice == 2 then
